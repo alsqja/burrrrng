@@ -43,6 +43,9 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     List<OrderMenu> orderMenus = new ArrayList<>();
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    List<Review> reviews = new ArrayList<>();
+
     public Order() {
     }
 
