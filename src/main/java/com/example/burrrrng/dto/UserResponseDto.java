@@ -16,7 +16,7 @@ public class UserResponseDto implements ResDtoDataType {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public UserResponseDto(Long id, String name, String email, String password, String address, String role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserResponseDto(Long id, String name, String email, String address, String role, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -30,7 +30,6 @@ public class UserResponseDto implements ResDtoDataType {
         return new UserResponseDto(
                 user.getId(),
                 user.getName(),
-                user.getEmail(),
                 user.getEmail(),
                 user.getAddress(),
                 user.getRole().getValue(),

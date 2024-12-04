@@ -29,7 +29,6 @@ public class UserRequestDto {
     @NotBlank(message = "주소를 입력해주세요.")
     private String address;
 
-    @NotBlank(message = "필수값입니다.")
     private UserRole role;
 
     public UserRequestDto(String name, String email, String password, String address, UserRole role) {
@@ -42,9 +41,9 @@ public class UserRequestDto {
 
     public User toEntity() {
         return new User(
-                this.name,
                 this.email,
                 passwordEncoder.encode(this.password),
+                this.name,
                 this.address,
                 this.role
                 );
