@@ -34,7 +34,7 @@ public class UserController {
     public ResponseEntity<CommonResDto<UserResponseDto>> loginUser(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
         User loginedUser = userService.loginUser(loginRequestDto);
         HttpSession session = request.getSession();
-        session.setAttribute(Const.LOGIN_USER, loginedUser.getId());
+        session.setAttribute(Const.LOGIN_USER, loginedUser);
 
         return ResponseEntity.ok().body(new CommonResDto<>("정상적으로 로그인되었습니다.", UserResponseDto.toDto(loginedUser)));
     }
