@@ -14,6 +14,8 @@ import com.example.burrrrng.exception.UnauthorizedException;
 import com.example.burrrrng.repository.OwnerStoreRepository;
 import com.example.burrrrng.repository.StoreRepository;
 import com.example.burrrrng.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +29,16 @@ public class OwnerStoreService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
 
-    public CommonResDto<ResponseOwnerStoreDto> createStore(RequestOwnerStoreDto requestOwnerStoreDto) {
-        Long userId = 1L;
-        User user = userRepository.findByIdOrElseThrow(userId);
+    public CommonResDto<ResponseOwnerStoreDto> createStore(RequestOwnerStoreDto requestOwnerStoreDto, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
+
+        User user = (User) session.getAttribute(Const.LOGIN_USER);
+        if (user == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
         String name = requestOwnerStoreDto.getName();
         LocalTime openedAt = requestOwnerStoreDto.getOpenedAt();
         LocalTime closedAt = requestOwnerStoreDto.getClosedAt();

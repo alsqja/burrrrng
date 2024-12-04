@@ -16,6 +16,7 @@ import com.example.burrrrng.repository.MenuRepository;
 import com.example.burrrrng.repository.OwnerStoreRepository;
 import com.example.burrrrng.repository.StoreRepository;
 import com.example.burrrrng.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class MenuService {
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
 
-    public CommonResDto<ResponseMenuDto> createMenu(Long id, RequestMenuDto requestMenuDto) {
+    public CommonResDto<ResponseMenuDto> createMenu(Long id, RequestMenuDto requestMenuDto, HttpServletRequest request) {
         Store store = storeRepository.findById(id).orElse(null); // -> 가게 지정
         Long userId = 1L;
         User user = userRepository.findByIdOrElseThrow(userId); // -> 세션으로 유저 데이터 받기
