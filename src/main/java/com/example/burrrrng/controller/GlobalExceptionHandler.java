@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> errorDetails = new HashMap<>();
         errorDetails.put("status", HttpStatus.UNAUTHORIZED.value());
         errorDetails.put("error", HttpStatus.UNAUTHORIZED);
-        errorDetails.put("message", "관리자만 작성 가능합니다.");
+        errorDetails.put("message", ex.getMessage());
         errorDetails.put("timestamp", System.currentTimeMillis());
 
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);

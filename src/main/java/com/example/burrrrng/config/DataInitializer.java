@@ -30,7 +30,8 @@ public class DataInitializer {
     @PostConstruct
     public void init() {
 
-        User user = new User("email@email.com", "password", "name", "address", UserRole.USER);
+        PasswordEncoder passwordEncoder = new PasswordEncoder();
+        User user = new User("email@email.com", passwordEncoder.encode("0000"), "name", "address", UserRole.USER);
 
         userRepository.save(user);
 
