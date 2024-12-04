@@ -45,4 +45,17 @@ public class UserController {
         CommonResDto<UserResponseDto> result = new CommonResDto<>("조회 완료되었습니다.", userResponseDto);
         return ResponseEntity.ok().body(result);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CommonResDto<UserResponseDto>> updateUser(@PathVariable Long id,
+                                                                    @Valid @RequestBody UserRequestDto userRequestDto,
+                                                                    HttpSession session) {
+
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        UserResponseDto updatedUser = userService.updateUser(id, userRequestDto, loginUser);
+        CommonResDto<UserResponseDto> result = new CommonResDto<>("수정 완료되었습니다.", UserResponseDto.toDto(loginUser));
+        return ResponseEntity.ok().body(result);
+    }
+
 }

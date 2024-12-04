@@ -44,4 +44,25 @@ public class UserService {
     public User findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 사용자입니다."));
     }
+
+    @Transactional
+    public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto, User loginUser) {
+
+        if (!id.equals(loginUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "수정이 불가능합니다.");
+        }
+
+        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 사용자입니다."));
+
+        if (userRequestDto.getName() != null && !userRequestDto.getName().isEmpty()) {
+            user.setName(userRequestDto.getName());
+        }
+        if (userRequestDto.getAddress() != null && !userRequestDto.getAddress().isEmpty()) {
+            user.setAddress(userRequestDto.getAddress());
+        }
+
+        user.update(userRequestDto);
+        return UserResponseDto.toDto(user);
+    }
+
 }
