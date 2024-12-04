@@ -1,6 +1,6 @@
-package com.example.burrrrng.Service;
+package com.example.burrrrng.service;
 
-import com.example.burrrrng.Repository.UserRepository;
+import com.example.burrrrng.repository.UserRepository;
 import com.example.burrrrng.dto.UserRequestDto;
 import com.example.burrrrng.dto.UserResponseDto;
 import com.example.burrrrng.entity.User;
