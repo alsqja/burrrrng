@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Component
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class DataInitializer {
 
         userRepository.save(user);
 
-        Store store = new Store(user, "storeName", LocalDateTime.now(), LocalDateTime.now(), 12000, StoreStatus.OPENED);
+        Store store = new Store(user, "storeName", LocalTime.now(), LocalTime.now(), 12000, StoreStatus.OPENED);
 
         storeRepository.save(store);
 
