@@ -1,5 +1,7 @@
 package com.example.burrrrng.controller;
 
+import com.example.burrrrng.exception.StoreLimitException;
+import com.example.burrrrng.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -49,4 +51,27 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Map<String, Object>> handleUnauthorizedException(UnauthorizedException ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("status", HttpStatus.UNAUTHORIZED.value());
+        errorDetails.put("error", HttpStatus.UNAUTHORIZED);
+        errorDetails.put("message", "관리자만 작성 가능합니다.");
+        errorDetails.put("timestamp", System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(StoreLimitException.class)
+    public ResponseEntity<Map<String, Object>> handleStoreLimitExceededException(StoreLimitException ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("status", HttpStatus.BAD_REQUEST.value());
+        errorDetails.put("error", HttpStatus.BAD_REQUEST);
+        errorDetails.put("message", "폐업 상태가 아닌 가게를 3개 이상 운영할 수 없습니다.");
+        errorDetails.put("timestamp", System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
 }
