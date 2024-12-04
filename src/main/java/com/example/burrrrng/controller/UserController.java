@@ -1,6 +1,6 @@
 package com.example.burrrrng.controller;
 
-import com.example.burrrrng.Service.UserService;
+import com.example.burrrrng.service.UserService;
 import com.example.burrrrng.dto.UserRequestDto;
 import com.example.burrrrng.dto.UserResponseDto;
 import com.example.burrrrng.dto.common.CommonResDto;
