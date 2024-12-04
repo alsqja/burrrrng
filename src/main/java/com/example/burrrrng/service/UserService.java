@@ -65,4 +65,8 @@ public class UserService {
         return UserResponseDto.toDto(user);
     }
 
+    public void deleteUser(Long id) {
+        findUserById(id);
+        userRepository.deleteById(id);
+    }
 }
