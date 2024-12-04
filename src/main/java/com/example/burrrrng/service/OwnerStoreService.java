@@ -30,15 +30,7 @@ public class OwnerStoreService {
     private final UserRepository userRepository;
 
     public CommonResDto<ResponseOwnerStoreDto> createStore(RequestOwnerStoreDto requestOwnerStoreDto, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
-
-        User user = (User) session.getAttribute(Const.LOGIN_USER);
-        if (user == null) {
-            throw new UnauthorizedException("로그인이 필요합니다.");
-        }
+        User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
         String name = requestOwnerStoreDto.getName();
         LocalTime openedAt = requestOwnerStoreDto.getOpenedAt();
         LocalTime closedAt = requestOwnerStoreDto.getClosedAt();

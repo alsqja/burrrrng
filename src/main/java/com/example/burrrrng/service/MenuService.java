@@ -1,6 +1,7 @@
 package com.example.burrrrng.service;
 
 
+import com.example.burrrrng.constants.Const;
 import com.example.burrrrng.dto.RequestMenuDto;
 import com.example.burrrrng.dto.ResponseMenuDto;
 import com.example.burrrrng.dto.common.CommonResDto;
@@ -30,8 +31,7 @@ public class MenuService {
 
     public CommonResDto<ResponseMenuDto> createMenu(Long id, RequestMenuDto requestMenuDto, HttpServletRequest request) {
         Store store = storeRepository.findById(id).orElse(null); // -> 가게 지정
-        Long userId = 1L;
-        User user = userRepository.findByIdOrElseThrow(userId); // -> 세션으로 유저 데이터 받기
+        User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
 
         if (requestMenuDto.getName() == null || requestMenuDto.getName().trim().isEmpty()) {
             throw new NameAndPriceException("메뉴 이름은 필수 입력 사항입니다.");
