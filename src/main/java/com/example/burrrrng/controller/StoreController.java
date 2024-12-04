@@ -1,5 +1,6 @@
 package com.example.burrrrng.controller;
 
+import com.example.burrrrng.dto.MenuListResDto;
 import com.example.burrrrng.dto.StoreAllResDto;
 import com.example.burrrrng.dto.StoreListResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
@@ -32,5 +33,14 @@ public class StoreController {
     public ResponseEntity<CommonResDto<StoreAllResDto>> findById(@PathVariable Long id) {
 
         return new ResponseEntity<>(new CommonResDto<>("가게 조회 완료", storeService.findById(id)), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/menus")
+    public ResponseEntity<CommonResDto<MenuListResDto>> findAllStoreMenus(@PathVariable Long id) {
+
+        return new ResponseEntity<>(
+                new CommonResDto<>("메뉴 조회 완료", new MenuListResDto(storeService.findAllStoreMenus(id))),
+                HttpStatus.OK
+        );
     }
 }
