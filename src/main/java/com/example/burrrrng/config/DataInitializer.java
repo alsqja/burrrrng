@@ -1,11 +1,14 @@
 package com.example.burrrrng.config;
 
+import com.example.burrrrng.entity.Menu;
 import com.example.burrrrng.entity.Order;
 import com.example.burrrrng.entity.Store;
 import com.example.burrrrng.entity.User;
+import com.example.burrrrng.enums.MenuStatus;
 import com.example.burrrrng.enums.OrderStatus;
 import com.example.burrrrng.enums.StoreStatus;
 import com.example.burrrrng.enums.UserRole;
+import com.example.burrrrng.repository.MenuRepository;
 import com.example.burrrrng.repository.OrderRepository;
 import com.example.burrrrng.repository.StoreRepository;
 import com.example.burrrrng.repository.UserRepository;
@@ -22,6 +25,7 @@ public class DataInitializer {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
+    private final MenuRepository menuRepository;
 
     @PostConstruct
     public void init() {
@@ -37,5 +41,15 @@ public class DataInitializer {
         Order order = new Order(user, store, OrderStatus.UNCHECKED);
 
         orderRepository.save(order);
+
+        for (int i = 1; i <= 3; i++) {
+            Menu menu = new Menu(user, store, "menuName" + i, 10000 * i, MenuStatus.NORMAL);
+            menuRepository.save(menu);
+        }
+
+        for (int i = 4; i <= 6; i++) {
+            Menu menu = new Menu(user, store, "menuName" + i, 12000, MenuStatus.SOLDOUT);
+            menuRepository.save(menu);
+        }
     }
 }
