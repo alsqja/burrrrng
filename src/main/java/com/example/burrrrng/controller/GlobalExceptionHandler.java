@@ -1,9 +1,6 @@
 package com.example.burrrrng.controller;
 
-import com.example.burrrrng.exception.NameAndPriceException;
-import com.example.burrrrng.exception.SameMenuException;
-import com.example.burrrrng.exception.StoreLimitException;
-import com.example.burrrrng.exception.UnauthorizedException;
+import com.example.burrrrng.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -97,6 +94,28 @@ public class GlobalExceptionHandler {
         err.put("timestamp", System.currentTimeMillis());
 
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(StoreNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleStoreNotFoundException(StoreNotFoundException ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("status", HttpStatus.NOT_FOUND.value());
+        errorDetails.put("error", HttpStatus.NOT_FOUND);
+        errorDetails.put("message", ex.getMessage());
+        errorDetails.put("timestamp", System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MenuNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleMenuNotFoundException(MenuNotFoundException ex) {
+        Map<String, Object> err = new HashMap<>();
+        err.put("status", HttpStatus.NOT_FOUND.value());
+        err.put("error", HttpStatus.NOT_FOUND);
+        err.put("message", ex.getMessage());
+        err.put("timestamp", System.currentTimeMillis());
+
+        return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
     }
 
 }
