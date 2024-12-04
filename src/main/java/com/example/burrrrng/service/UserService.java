@@ -1,6 +1,7 @@
-package com.example.burrrrng.Service;
+package com.example.burrrrng.service;
 
-import com.example.burrrrng.Repository.UserRepository;
+import com.example.burrrrng.config.PasswordEncoder;
+import com.example.burrrrng.repository.UserRepository;
 import com.example.burrrrng.dto.LoginRequestDto;
 import com.example.burrrrng.dto.UserRequestDto;
 import com.example.burrrrng.dto.UserResponseDto;
@@ -31,10 +32,13 @@ public class UserService {
 
 
     public User loginUser(LoginRequestDto loginRequestDto) {
-//        Optional<User> user = userRepository.findByEmail(loginRequestDto.getEmail());
-////        if (user == null || !Objects.equals(user.getPassword(), loginRequestDto.getPassword())) {
-////            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
-//        }
-        return null;
+
+        User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 이메일입니다."));
+
+        PasswordEncoder passwordEncoder = new PasswordEncoder();
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
+        }
+        return user;
     }
 }
