@@ -1,6 +1,7 @@
 package com.example.burrrrng.Service;
 
 import com.example.burrrrng.Repository.UserRepository;
+import com.example.burrrrng.dto.LoginRequestDto;
 import com.example.burrrrng.dto.UserRequestDto;
 import com.example.burrrrng.dto.UserResponseDto;
 import com.example.burrrrng.entity.User;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -28,4 +30,11 @@ public class UserService {
     }
 
 
+    public User loginUser(LoginRequestDto loginRequestDto) {
+//        Optional<User> user = userRepository.findByEmail(loginRequestDto.getEmail());
+////        if (user == null || !Objects.equals(user.getPassword(), loginRequestDto.getPassword())) {
+////            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.");
+//        }
+        return null;
+    }
 }
