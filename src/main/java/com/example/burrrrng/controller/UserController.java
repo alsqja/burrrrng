@@ -13,10 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -37,5 +34,15 @@ public class UserController {
         session.setAttribute(Const.LOGIN_USER, loginedUser);
 
         return ResponseEntity.ok().body(new CommonResDto<>("정상적으로 로그인되었습니다.", UserResponseDto.toDto(loginedUser)));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CommonResDto<UserResponseDto>> findUser(@PathVariable Long id) {
+
+        User user = userService.findUserById(id);
+
+        UserResponseDto userResponseDto = UserResponseDto.toDto(user);
+        CommonResDto<UserResponseDto> result = new CommonResDto<>("조회 완료되었습니다.", userResponseDto);
+        return ResponseEntity.ok().body(result);
     }
 }

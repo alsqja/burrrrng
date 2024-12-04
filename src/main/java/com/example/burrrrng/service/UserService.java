@@ -40,4 +40,8 @@ public class UserService {
         }
         return user;
     }
+
+    public User findUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 사용자입니다."));
+    }
 }
