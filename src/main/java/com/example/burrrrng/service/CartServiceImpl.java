@@ -1,30 +1,25 @@
 package com.example.burrrrng.service;
 
-import com.example.burrrrng.common.Const;
+import com.example.burrrrng.config.CartCookieEncoder;
 import com.example.burrrrng.dto.CartMenuListResDto;
 import com.example.burrrrng.dto.CartMenuResDto;
 import com.example.burrrrng.dto.CartReqDto;
 import com.example.burrrrng.entity.Menu;
 import com.example.burrrrng.repository.MenuRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
-    private final ObjectMapper objectMapper;
     private final MenuRepository menuRepository;
+    private final CartCookieEncoder cartCookieEncoder;
 
     @Override
     public CartMenuListResDto save(HttpServletResponse response, CartReqDto dto) {
@@ -36,32 +31,23 @@ public class CartServiceImpl implements CartService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "장바구니 메뉴를 확인해 주세요.");
         }
 
+        Long storeId = 0L;
+        for (Menu menu : menus) {
+            if (!storeId.equals(menu.getStore().getId()) && !storeId.equals(0L)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "장바구니에는 같은 가게의 상품만 담을 수 있습니다.");
+            }
+            storeId = menu.getStore().getId();
+        }
+
         List<CartMenuResDto> cartMenus = menus.stream().map(i -> new CartMenuResDto(
                 i.getId(),
                 i.getName(),
-                i.getPrice(),
+                i.getPrice() * dto.getAmounts().get(menus.indexOf(i)),
                 dto.getAmounts().get(menus.indexOf(i))
         )).toList();
 
-        setCartToCookies(cartMenus, response);
+        cartCookieEncoder.setCartToCookies(cartMenus, response);
 
         return new CartMenuListResDto(cartMenus);
-    }
-
-    private void setCartToCookies(List<CartMenuResDto> cartItems, HttpServletResponse response) {
-
-        try {
-            String cartJson = objectMapper.writeValueAsString(cartItems);
-
-            String encodedCartJson = URLEncoder.encode(cartJson, "UTF-8");
-
-            Cookie cookie = new Cookie(Const.CART_COOKIE_NAME, encodedCartJson);
-            cookie.setMaxAge(Const.ONE_DAY_SECONDS);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-        } catch (JsonProcessingException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
     }
 }
