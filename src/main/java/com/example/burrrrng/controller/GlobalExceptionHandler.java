@@ -57,13 +57,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<Map<String, Object>> handleUnauthorizedException(UnauthorizedException ex) {
-        Map<String, Object> err = new HashMap<>();
-        err.put("status", HttpStatus.UNAUTHORIZED.value());
-        err.put("error", HttpStatus.UNAUTHORIZED);
-        err.put("message", "관리자만 작성 가능합니다.");
-        err.put("timestamp", System.currentTimeMillis());
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("status", HttpStatus.UNAUTHORIZED.value());
+        errorDetails.put("error", HttpStatus.UNAUTHORIZED);
+        errorDetails.put("message", ex.getMessage());
+        errorDetails.put("timestamp", System.currentTimeMillis());
 
-        return new ResponseEntity<>(err, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(StoreLimitException.class)
