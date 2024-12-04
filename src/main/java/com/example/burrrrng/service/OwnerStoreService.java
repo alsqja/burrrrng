@@ -1,6 +1,7 @@
 package com.example.burrrrng.service;
 
 
+import com.example.burrrrng.constants.Const;
 import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.dto.RequestOwnerStoreDto;
 import com.example.burrrrng.dto.ResponseOwnerStoreDto;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +31,8 @@ public class OwnerStoreService {
         Long userId = 1L;
         User user = userRepository.findByIdOrElseThrow(userId);
         String name = requestOwnerStoreDto.getName();
-        LocalDateTime openedAt = requestOwnerStoreDto.getOpenedAt();
-        LocalDateTime closedAt = requestOwnerStoreDto.getClosedAt();
+        LocalTime openedAt = requestOwnerStoreDto.getOpenedAt();
+        LocalTime closedAt = requestOwnerStoreDto.getClosedAt();
         int minPrice = requestOwnerStoreDto.getMinPrice();
         StoreStatus status = StoreStatus.OPENED;
 
