@@ -2,6 +2,7 @@ package com.example.burrrrng.service;
 
 import com.example.burrrrng.config.CartCookieEncoder;
 import com.example.burrrrng.dto.CartMenuResDto;
+import com.example.burrrrng.dto.OrderAllResDto;
 import com.example.burrrrng.dto.OrderResDto;
 import com.example.burrrrng.entity.Menu;
 import com.example.burrrrng.entity.Order;
@@ -72,5 +73,12 @@ public class OrderServiceImpl implements OrderService {
         cartCookieEncoder.deleteCartCookie(response);
 
         return new OrderResDto(savedOrder.getId(), savedOrder.getStatus(), totalPrice, savedOrder.getCreatedAt(), savedOrder.getUpdatedAt());
+    }
+
+    @Override
+    public List<OrderAllResDto> findAllUserOrder(Long userId) {
+        List<Object[]> results = orderRepository.findAllUserOrders(userId);
+        return results.stream()
+                .map(OrderAllResDto::new).toList();
     }
 }
