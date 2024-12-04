@@ -4,6 +4,7 @@ import com.example.burrrrng.dto.common.ResDtoDataType;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 public class StoreResDto implements ResDtoDataType {
@@ -14,13 +15,13 @@ public class StoreResDto implements ResDtoDataType {
     private final int minPrice;
 
     // TODO : change date type
-    private final LocalDateTime openedAt;
-    private final LocalDateTime closedAt;
+    private final LocalTime openedAt;
+    private final LocalTime closedAt;
 
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public StoreResDto(Long id, String name, double star, int minPrice, LocalDateTime openedAt, LocalDateTime closedAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public StoreResDto(Long id, String name, double star, int minPrice, LocalTime openedAt, LocalTime closedAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.star = star;

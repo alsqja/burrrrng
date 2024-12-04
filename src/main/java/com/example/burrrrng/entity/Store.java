@@ -18,6 +18,7 @@ import lombok.Getter;
 import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,10 +40,10 @@ public class Store extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    private LocalDateTime openedAt;
+    private LocalTime openedAt;
 
     @Column(nullable = false)
-    private LocalDateTime closedAt;
+    private LocalTime closedAt;
 
     @Column(nullable = false)
     private int minPrice;
@@ -63,7 +64,7 @@ public class Store extends BaseEntity {
     public Store() {
     }
 
-    public Store(User user, String name, LocalDateTime openedAt, LocalDateTime closedAt, int minPrice, StoreStatus status) {
+    public Store(User user, String name, LocalTime openedAt, LocalTime closedAt, int minPrice, StoreStatus status) {
         this.user = user;
         this.name = name;
         this.openedAt = openedAt;
