@@ -1,6 +1,6 @@
 package com.example.burrrrng.config;
 
-import com.example.burrrrng.common.Const;
+import com.example.burrrrng.constants.Const;
 import com.example.burrrrng.dto.CartMenuResDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
