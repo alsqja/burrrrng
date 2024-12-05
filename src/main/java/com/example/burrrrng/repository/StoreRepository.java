@@ -31,9 +31,12 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
                     s.updatedAt
                 )
                 from Store s
-                join Order o on s.id = o.store.id
+                left join Order o on s.id = o.store.id
                 left join Review r on r.order.id = o.id
                 group by s.id
             """)
     List<StoreResDto> findAllStoresWithStar();
+
+    List<Store> findByUserId(Long id);
+
 }
