@@ -2,10 +2,12 @@ package com.example.burrrrng.service;
 
 
 import com.example.burrrrng.constants.Const;
+import com.example.burrrrng.dto.ResponseMenuDto;
 import com.example.burrrrng.dto.common.CommonListResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.dto.RequestOwnerStoreDto;
 import com.example.burrrrng.dto.ResponseOwnerStoreDto;
+import com.example.burrrrng.entity.Menu;
 import com.example.burrrrng.entity.Store;
 import com.example.burrrrng.entity.User;
 import com.example.burrrrng.enums.StoreStatus;
@@ -13,6 +15,7 @@ import com.example.burrrrng.enums.UserRole;
 import com.example.burrrrng.exception.StoreLimitException;
 import com.example.burrrrng.exception.StoreNotFoundException;
 import com.example.burrrrng.exception.UnauthorizedException;
+import com.example.burrrrng.repository.MenuRepository;
 import com.example.burrrrng.repository.OwnerStoreRepository;
 import com.example.burrrrng.repository.StoreRepository;
 import com.example.burrrrng.repository.UserRepository;
@@ -33,6 +36,7 @@ public class OwnerStoreService {
     private final OwnerStoreRepository ownerStoreRepository;
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
+    private final MenuRepository menuRepository;
 
     public CommonResDto<ResponseOwnerStoreDto> createStore(RequestOwnerStoreDto requestOwnerStoreDto, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
@@ -112,5 +116,22 @@ public class OwnerStoreService {
         );
 
         return new CommonListResDto<>("가게 조회 완료", List.of(storeDto));
+    }
+
+    public CommonListResDto<ResponseMenuDto> viewMenus(Long id, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
+
+        Store store = ownerStoreRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+
+        List<Menu> menus = menuRepository.findByStoreId(store.getId());
+
+        List<ResponseMenuDto> menuDtos = new ArrayList<>();
+
+        for (Menu menu : menus) {
+            ResponseMenuDto menuDto = new ResponseMenuDto(menu);
+            menuDtos.add(menuDto);
+        }
+        return new CommonListResDto<>("메뉴 조회 완료",menuDtos);
     }
 }

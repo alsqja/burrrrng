@@ -60,7 +60,7 @@ public class MenuService {
                 newMenu.getId(),
                 newMenu.getName(),
                 newMenu.getPrice(),
-                newMenu.getStatus().name()
+                newMenu.getStatus().getValue()
         );
         return new CommonResDto<>("메뉴생성완료", responseMenuDto);
     }
@@ -101,7 +101,7 @@ public class MenuService {
                 updateMenu.getId(),
                 updateMenu.getName(),
                 updateMenu.getPrice(),
-                updateMenu.getStatus().name()
+                updateMenu.getStatus().getValue()
         );
         return new CommonResDto<>("메뉴 수정 완료", responseMenuDto);
     }
