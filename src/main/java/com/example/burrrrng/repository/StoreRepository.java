@@ -36,4 +36,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
                 group by s.id
             """)
     List<StoreResDto> findAllStoresWithStar();
+
+    List<Store> findByUserId(Long id);
+
 }

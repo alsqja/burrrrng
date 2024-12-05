@@ -2,6 +2,7 @@ package com.example.burrrrng.service;
 
 
 import com.example.burrrrng.constants.Const;
+import com.example.burrrrng.dto.common.CommonListResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.dto.RequestOwnerStoreDto;
 import com.example.burrrrng.dto.ResponseOwnerStoreDto;
@@ -21,6 +22,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,4 +68,28 @@ public class OwnerStoreService {
 
     }
 
+
+    public CommonListResDto<ResponseOwnerStoreDto> viewAllStore(HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
+
+        List<Store> stores = storeRepository.findByUserId(user.getId());
+
+        List<ResponseOwnerStoreDto> storeDtos = new ArrayList<>();
+
+        for (Store store : stores) {
+            ResponseOwnerStoreDto dto = new ResponseOwnerStoreDto(
+                    store.getId(),
+                    store.getName(),
+                    store.getMinPrice(),
+                    store.getStatus().name(),
+                    store.getOpenedAt(),
+                    store.getClosedAt(),
+                    store.getCreatedAt(),
+                    store.getUpdatedAt()
+            );
+            storeDtos.add(dto);
+        }
+
+        return new CommonListResDto<>("가게 조회 완료", storeDtos);
+    }
 }
