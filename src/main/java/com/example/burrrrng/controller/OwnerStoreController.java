@@ -29,4 +29,11 @@ public class OwnerStoreController {
         return ownerStoreService.viewAllStore(request);
     }
 
+    @GetMapping("/{id}")
+    public CommonListResDto<ResponseOwnerStoreDto> viewOneStore(
+            @PathVariable Long id,
+            HttpServletRequest request){
+        return ownerStoreService.viewOneStore(id, request);
+    }
+
 }
