@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -28,6 +29,7 @@ import java.util.List;
 @Entity
 @Table(name = "store")
 @Getter
+@Setter
 @SQLDelete(sql = "UPDATE store SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @FilterDef(name = "softDeleteFilterStore", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
 @Filter(name = "softDeleteFilterStore", condition = "deleted_at IS NULL")
@@ -78,4 +80,7 @@ public class Store extends BaseEntity {
         this.status = status;
     }
 
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
 }

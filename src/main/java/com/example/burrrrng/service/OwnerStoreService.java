@@ -2,11 +2,9 @@ package com.example.burrrrng.service;
 
 
 import com.example.burrrrng.constants.Const;
-import com.example.burrrrng.dto.ResponseMenuDto;
+import com.example.burrrrng.dto.*;
 import com.example.burrrrng.dto.common.CommonListResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
-import com.example.burrrrng.dto.RequestOwnerStoreDto;
-import com.example.burrrrng.dto.ResponseOwnerStoreDto;
 import com.example.burrrrng.entity.Menu;
 import com.example.burrrrng.entity.Store;
 import com.example.burrrrng.entity.User;
@@ -77,7 +75,7 @@ public class OwnerStoreService {
     public CommonListResDto<ResponseOwnerStoreDto> viewAllStore(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
 
-        List<Store> stores = storeRepository.findByUserId(user.getId());
+        List<Store> stores = storeRepository.findByUserIdAndStatusNot(user.getId(), StoreStatus.CLOSED);
 
         List<ResponseOwnerStoreDto> storeDtos = new ArrayList<>();
 
@@ -101,8 +99,13 @@ public class OwnerStoreService {
     public CommonListResDto<ResponseOwnerStoreDto> viewOneStore(Long id, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
 
+
         Store store = ownerStoreRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+
+        if(store.getStatus() == StoreStatus.CLOSED){
+            throw new StoreNotFoundException("폐업된 가게입니다.");
+        }
 
         ResponseOwnerStoreDto storeDto = new ResponseOwnerStoreDto(
                 store.getId(),
@@ -124,6 +127,9 @@ public class OwnerStoreService {
         Store store = ownerStoreRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
 
+        if(store.getStatus() == StoreStatus.CLOSED){
+            throw new StoreNotFoundException("폐업된 가게입니다.");
+        }
         List<Menu> menus = menuRepository.findByStoreId(store.getId());
 
         List<ResponseMenuDto> menuDtos = new ArrayList<>();
@@ -133,5 +139,50 @@ public class OwnerStoreService {
             menuDtos.add(menuDto);
         }
         return new CommonListResDto<>("메뉴 조회 완료",menuDtos);
+    }
+
+    public CommonResDto<ResponseOwnerStoreUpdateDto> updateStore(Long id, RequestOwnerStoreUpdateDto requestOwnerStoreUpdateDto, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
+
+        Store store = ownerStoreRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+        if(store.getStatus() == StoreStatus.CLOSED){
+            throw new StoreNotFoundException("폐업된 가게입니다.");
+        }
+
+        if (requestOwnerStoreUpdateDto.getName() != null && !requestOwnerStoreUpdateDto.getName().trim().isEmpty()) {
+            store.setName(requestOwnerStoreUpdateDto.getName());
+        }
+
+        if (requestOwnerStoreUpdateDto.getMinPrice() > 0) {
+            store.setMinPrice(requestOwnerStoreUpdateDto.getMinPrice());
+        }
+
+        if (requestOwnerStoreUpdateDto.getOpenedAt() != null) {
+            store.setOpenedAt(requestOwnerStoreUpdateDto.getOpenedAt());
+        }
+
+        if (requestOwnerStoreUpdateDto.getClosedAt() != null) {
+            store.setClosedAt(requestOwnerStoreUpdateDto.getClosedAt());
+        }
+
+        if (requestOwnerStoreUpdateDto.getStatus() != null) {
+            store.setStatus(requestOwnerStoreUpdateDto.getStatus());
+            if (requestOwnerStoreUpdateDto.getStatus() == StoreStatus.CLOSED) {
+                store.setDeletedAt(LocalDateTime.now());
+            }
+        }
+
+        Store updatedStore = ownerStoreRepository.save(store);
+
+        ResponseOwnerStoreUpdateDto responseStoreDto = new ResponseOwnerStoreUpdateDto(
+                updatedStore.getId(),
+                updatedStore.getName(),
+                updatedStore.getMinPrice(),
+                updatedStore.getOpenedAt(),
+                updatedStore.getClosedAt()
+        );
+
+        return new CommonResDto<>("가게 수정 완료", responseStoreDto);
     }
 }

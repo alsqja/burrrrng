@@ -40,4 +40,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     List<Store> findByUserId(Long id);
 
+    List<Store> findByUserIdAndStatusNot(Long id, StoreStatus storeStatus);
+
 }
