@@ -11,6 +11,7 @@ import com.example.burrrrng.entity.User;
 import com.example.burrrrng.enums.StoreStatus;
 import com.example.burrrrng.enums.UserRole;
 import com.example.burrrrng.exception.StoreLimitException;
+import com.example.burrrrng.exception.StoreNotFoundException;
 import com.example.burrrrng.exception.UnauthorizedException;
 import com.example.burrrrng.repository.OwnerStoreRepository;
 import com.example.burrrrng.repository.StoreRepository;
@@ -91,5 +92,25 @@ public class OwnerStoreService {
         }
 
         return new CommonListResDto<>("가게 조회 완료", storeDtos);
+    }
+
+    public CommonListResDto<ResponseOwnerStoreDto> viewOneStore(Long id, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
+
+        Store store = ownerStoreRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+
+        ResponseOwnerStoreDto storeDto = new ResponseOwnerStoreDto(
+                store.getId(),
+                store.getName(),
+                store.getMinPrice(),
+                store.getStatus().name(),
+                store.getOpenedAt(),
+                store.getClosedAt(),
+                store.getCreatedAt(),
+                store.getUpdatedAt()
+        );
+
+        return new CommonListResDto<>("가게 조회 완료", List.of(storeDto));
     }
 }
