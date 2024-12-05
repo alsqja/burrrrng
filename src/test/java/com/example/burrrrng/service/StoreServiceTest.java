@@ -4,6 +4,7 @@ import com.example.burrrrng.constants.Const;
 import com.example.burrrrng.dto.RequestOwnerStoreDto;
 import com.example.burrrrng.dto.ResponseOwnerStoreDto;
 import com.example.burrrrng.dto.StoreAllResDto;
+import com.example.burrrrng.dto.StoreResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.entity.Store;
 import com.example.burrrrng.entity.User;
@@ -20,6 +21,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -69,5 +71,20 @@ public class StoreServiceTest {
         StoreAllResDto findStore = storeService.findById(savedStore.getId());
 
         assertThat(findStore.getName()).isEqualTo(savedStore.getName());
+    }
+
+    @Test
+    void 가게전체조회() {
+
+        for (int i = 0; i < 3; i++) {
+            User user = userRepository.save(new User("test" + i + "@email.com", "0000", "testUserName" + i, "testUserAddress" + i, UserRole.OWNER));
+            Store store = new Store(user, "testStoreName" + i, LocalTime.of(10, 0), LocalTime.of(22, 0), 12000 * (i + 1), StoreStatus.OPENED);
+            storeRepository.save(store);
+        }
+
+        List<StoreResDto> stores = storeService.findAllStores();
+
+        assertThat(stores.size()).isEqualTo(3);
+        assertThat(stores.get(0).getName()).isEqualTo("testStoreName0");
     }
 }
