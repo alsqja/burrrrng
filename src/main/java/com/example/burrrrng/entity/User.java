@@ -1,7 +1,5 @@
 package com.example.burrrrng.entity;
 
-import com.example.burrrrng.dto.UserRequestDto;
-import com.example.burrrrng.dto.UserUpdateRequestDto;
 import com.example.burrrrng.enums.UserRole;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,6 +13,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDateTime;
@@ -24,7 +25,9 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @Getter
-@SQLDelete(sql = "UPDATE user SET deleted_at = ? WHERE id = ?")
+@SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@FilterDef(name = "softDeleteFilter", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
+@Filter(name = "softDeleteFilter", condition = "deleted_at IS NULL")
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
