@@ -5,6 +5,7 @@ import com.example.burrrrng.dto.RequestOwnerStoreDto;
 import com.example.burrrrng.dto.ResponseOwnerStoreDto;
 import com.example.burrrrng.dto.StoreAllResDto;
 import com.example.burrrrng.dto.StoreResDto;
+import com.example.burrrrng.dto.common.CommonListResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.entity.Store;
 import com.example.burrrrng.entity.User;
@@ -86,5 +87,28 @@ public class StoreServiceTest {
 
         assertThat(stores.size()).isEqualTo(3);
         assertThat(stores.get(0).getName()).isEqualTo("testStoreName0");
+    }
+
+    @Test
+    void 오너가게전체조회() {
+        User user = null;
+
+        for (int i = 1; i <= 3; i++) {
+            User storeUser = userRepository.save(new User("test" + i + "@email.com", "0000", "testUserName" + i, "testUserAddress" + i, UserRole.OWNER));
+            Store store = new Store(storeUser, "testStoreName" + i, LocalTime.of(10, 0), LocalTime.of(22, 0), 12000 * (i + 1), StoreStatus.OPENED);
+            storeRepository.save(store);
+            user = storeUser;
+        }
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(Const.LOGIN_USER, user);
+        request.setSession(session);
+
+        List<StoreResDto> stores = storeService.findAllStores();
+        CommonListResDto<ResponseOwnerStoreDto> ownerStores = ownerStoreService.viewAllStore(request);
+
+        assertThat(stores.size()).isEqualTo(3);
+        assertThat(ownerStores.getData().size()).isEqualTo(1);
     }
 }
