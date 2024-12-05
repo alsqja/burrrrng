@@ -7,8 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 public enum MenuStatus {
     NORMAL("normal"),
-    SOLDOUT("soldout"),
-    DELETE("delete");
+    SOLDOUT("soldout");
 
     private final String value;
 

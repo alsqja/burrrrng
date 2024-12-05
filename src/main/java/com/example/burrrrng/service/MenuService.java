@@ -79,7 +79,7 @@ public class MenuService {
         }
         List<Menu> menus = menuRepository.findByStoreId(storeId);
         for(Menu m : menus){
-            if(m.getName().equals(requestMenuUpdateDto.getName())){
+            if(m.getDeletedAt() == null && m.getName().equals(requestMenuUpdateDto.getName())){
                 throw new SameMenuException("같은 이름을 가진 메뉴가 이미 있습니다.");
             }
         }
@@ -114,7 +114,6 @@ public class MenuService {
         Menu menu = menuRepository.findByStoreIdAndMenuIdAndUserId(storeId, menuId, user.getId()).orElseThrow(() -> new MenuNotFoundException("삭제할 메뉴가 없습니다."));
 
         menu.setDeletedAt(LocalDateTime.now());
-        menu.setStatus(MenuStatus.DELETE);
         menuRepository.save(menu);
         return ResponseEntity.ok("메뉴 삭제 완료");
     }
