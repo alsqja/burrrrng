@@ -81,9 +81,17 @@ public class MenuService {
                 throw new SameMenuException("같은 이름을 가진 메뉴가 이미 있습니다.");
             }
         }
-        menu.setName(requestMenuUpdateDto.getName());
-        menu.setPrice(requestMenuUpdateDto.getPrice());
-        menu.setStatus(requestMenuUpdateDto.getStatus());
+        if (requestMenuUpdateDto.getName() != null && !requestMenuUpdateDto.getName().trim().isEmpty()) {
+            menu.setName(requestMenuUpdateDto.getName());
+        }
+
+        if (requestMenuUpdateDto.getPrice() != 0) {
+            menu.setPrice(requestMenuUpdateDto.getPrice());
+        }
+
+        if (requestMenuUpdateDto.getStatus() != null) {
+            menu.setStatus(requestMenuUpdateDto.getStatus());
+        }
 
         Menu updateMenu = menuRepository.save(menu);
 

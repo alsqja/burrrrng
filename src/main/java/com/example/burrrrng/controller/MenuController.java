@@ -21,7 +21,7 @@ public class MenuController {
     @PostMapping("/{id}/menus")
     public CommonResDto<ResponseMenuDto> createMenu(
             @PathVariable Long id,
-            @RequestBody RequestMenuCreateDto requestMenuCreateDto, HttpServletRequest request) {
+            @Valid @RequestBody RequestMenuCreateDto requestMenuCreateDto, HttpServletRequest request) {
         return menuService.createMenu(id, requestMenuCreateDto, request);
     }
 
@@ -29,9 +29,11 @@ public class MenuController {
     public CommonResDto<ResponseMenuDto> updateMenu(
             @PathVariable Long storeId,
             @PathVariable Long menuId,
-            @Valid @RequestBody RequestMenuUpdateDto requestMenuUpdateDto, HttpServletRequest request){
+            @RequestBody RequestMenuUpdateDto requestMenuUpdateDto, HttpServletRequest request){
         return menuService.updateMenu(storeId, menuId, requestMenuUpdateDto, request);
 
     }
+
+
 
 }
