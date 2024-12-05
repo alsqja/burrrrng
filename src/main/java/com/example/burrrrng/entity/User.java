@@ -26,8 +26,8 @@ import java.util.List;
 @Table(name = "user")
 @Getter
 @SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
-@FilterDef(name = "softDeleteFilter", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
-@Filter(name = "softDeleteFilter", condition = "deleted_at IS NULL")
+@FilterDef(name = "softDeleteFilterUser", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
+@Filter(name = "softDeleteFilterUser", condition = "deleted_at IS NULL")
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
