@@ -1,9 +1,7 @@
 package com.example.burrrrng.controller;
 
 
-import com.example.burrrrng.dto.RequestOwnerStoreDto;
-import com.example.burrrrng.dto.ResponseMenuDto;
-import com.example.burrrrng.dto.ResponseOwnerStoreDto;
+import com.example.burrrrng.dto.*;
 import com.example.burrrrng.dto.common.CommonListResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.service.OwnerStoreService;
@@ -43,5 +41,15 @@ public class OwnerStoreController {
             HttpServletRequest request){
         return ownerStoreService.viewMenus(id, request);
     }
+
+    @PatchMapping("/{id}")
+    public CommonResDto<ResponseOwnerStoreUpdateDto> updateStore(
+            @PathVariable Long id,
+            @RequestBody RequestOwnerStoreUpdateDto requestOwnerStoreUpdateDto,
+            HttpServletRequest request
+    ){
+        return ownerStoreService.updateStore(id, requestOwnerStoreUpdateDto, request);
+    }
+
 
 }
