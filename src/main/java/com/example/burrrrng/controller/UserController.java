@@ -2,11 +2,13 @@ package com.example.burrrrng.controller;
 
 import com.example.burrrrng.constants.Const;
 import com.example.burrrrng.dto.LoginRequestDto;
+import com.example.burrrrng.dto.PasswordCheckRequestDto;
 import com.example.burrrrng.dto.PasswordUpdateRequestDto;
 import com.example.burrrrng.dto.OrderAllListResDto;
 import com.example.burrrrng.dto.UserRequestDto;
 import com.example.burrrrng.dto.UserResponseDto;
 import com.example.burrrrng.dto.UserUpdateRequestDto;
+import com.example.burrrrng.dto.common.CommonNoContentResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.entity.User;
 import com.example.burrrrng.service.OrderService;
@@ -36,6 +38,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<CommonResDto<UserResponseDto>> loginUser(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
         User loginedUser = userService.loginUser(loginRequestDto);
+
+        //  SESSION, COOKIE 처리
         HttpSession session = request.getSession();
         session.setAttribute(Const.LOGIN_USER, loginedUser);
 
@@ -84,4 +88,23 @@ public class UserController {
     public ResponseEntity<CommonResDto<OrderAllListResDto>> findAllUserOrder(@PathVariable Long id) {
         return ResponseEntity.ok().body(new CommonResDto<>("주문 내역 받기 완료", new OrderAllListResDto(orderService.findAllUserOrder(id))));
     }
+
+    @PostMapping("/{id}/password-check")
+    public ResponseEntity<CommonNoContentResDto> checkPassword(
+            @PathVariable Long id,
+            @Valid @RequestBody PasswordCheckRequestDto passwordCheckRequestDto,
+            @SessionAttribute(name = Const.LOGIN_USER) User loginUser,
+            HttpServletRequest request
+    ) {
+        userService.checkPassword(id, passwordCheckRequestDto.getPassword(), loginUser);    // checkPassword -> false는 THROW, TRUE 는 실행(다음줄로 넘어감)
+
+        //  session 처리 REQUEST 사용 -> 로그인 세션 로직과 동일
+        HttpSession session = request.getSession();
+        session.setAttribute(Const.PASSWORD_CHECK, true);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonNoContentResDto("비밀번호 일치 확인"));
+    }
+
+
+
 }
