@@ -78,7 +78,7 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "본인만 수정이 가능합니다.");
         }
 
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 사용자입니다."));
+        User user = userRepository.findByIdOrElseThrow(id);
 
         PasswordEncoder passwordEncoder = new PasswordEncoder();
         if (!passwordEncoder.matches(passwordUpdateRequestDto.getOldPassword(), user.getPassword())) {
@@ -86,6 +86,22 @@ public class UserService {
         }
 
         String newPassword = passwordEncoder.encode(passwordUpdateRequestDto.getNewPassword());
-        user.updatePassword(newPassword);
+        user.updatePassword(newPassword);   // throw SQLException -> 500 INTERNAL_SERVER_ERROR
+    }
+
+    public void checkPassword(Long id, String inputPassword, User loginUser) {
+        //  1. LOGINUSER 의 ID와 ID가 일치하는지 확인 -> 일치X -> THROW
+        if (!id.equals(loginUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "본인만 확인 가능합니다.");
+        }
+
+        //  2. INPUTPASSWORD 가 DB에서 가져운 유저의 PASSWORD와 일치(MATCHS) 확인 -> 일치X -> THROW
+        User user = userRepository.findByIdOrElseThrow(id);
+
+        PasswordEncoder passwordEncoder = new PasswordEncoder();
+        if(!passwordEncoder.matches(inputPassword, user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+
     }
 }
