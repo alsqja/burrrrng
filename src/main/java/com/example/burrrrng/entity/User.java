@@ -1,6 +1,7 @@
 package com.example.burrrrng.entity;
 
 import com.example.burrrrng.dto.UserRequestDto;
+import com.example.burrrrng.dto.UserUpdateRequestDto;
 import com.example.burrrrng.enums.UserRole;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -79,6 +80,10 @@ public class User extends BaseEntity {
         this.address = address;
     }
 
-    public void update(UserRequestDto userRequestDto) {
+    public void update(UserUpdateRequestDto userUpdateRequestDto) {
+
+    }
+
+    public void setPassword(String newPassword) {
     }
 }
