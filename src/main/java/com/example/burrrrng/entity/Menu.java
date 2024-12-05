@@ -30,8 +30,8 @@ import java.util.List;
 @Getter
 @Table(name = "menu")
 @SQLDelete(sql = "UPDATE menu SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
-@FilterDef(name = "softDeleteFilter", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
-@Filter(name = "softDeleteFilter", condition = "deleted_at IS NULL")
+@FilterDef(name = "softDeleteFilterMenu", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
+@Filter(name = "softDeleteFilterMenu", condition = "deleted_at IS NULL")
 public class Menu extends BaseEntity {
 
     @Id
