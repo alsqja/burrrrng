@@ -1,6 +1,7 @@
 package com.example.burrrrng.service;
 
 import com.example.burrrrng.config.PasswordEncoder;
+import com.example.burrrrng.dto.UserUpdateRequestDto;
 import com.example.burrrrng.repository.UserRepository;
 import com.example.burrrrng.dto.LoginRequestDto;
 import com.example.burrrrng.dto.UserRequestDto;
@@ -44,4 +45,43 @@ public class UserService {
     public User findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 사용자입니다."));
     }
+
+    @Transactional
+    public UserResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto, User loginUser) {
+
+        if (!id.equals(loginUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "본인만 수정이 가능합니다.");
+        }
+
+        User user = userRepository.findByIdOrElseThrow(id);
+
+        if (userUpdateRequestDto.getName() != null && !userUpdateRequestDto.getName().isEmpty()) {
+            user.setName(userUpdateRequestDto.getName());
+        }
+        if (userUpdateRequestDto.getAddress() != null && !userUpdateRequestDto.getAddress().isEmpty()) {
+            user.setAddress(userUpdateRequestDto.getAddress());
+        }
+
+        return UserResponseDto.toDto(user);
+    }
+
+//    public void deleteUser(Long id) {
+//        userRepository.findByIdOrElseThrow(id);
+//        userRepository.deleteById(id);
+//    }
+
+//    @Transactional
+//    public void updatePassword(Long id, UserRequestDto userRequestDto, User loginUser) {
+//
+//        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 사용자입니다."));
+//
+//        PasswordEncoder passwordEncoder = new PasswordEncoder();
+//        if (!passwordEncoder.matches(userRequestDto.getCurrentPassword(), user.getPassword())) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        String newPassword = passwordEncoder.encode(userRequestDto.getNewPassword());
+//        user.setPassword(newPassword);
+//        userRepository.save(user);
+//    }
 }

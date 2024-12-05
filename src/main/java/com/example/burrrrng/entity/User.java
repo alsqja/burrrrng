@@ -1,5 +1,7 @@
 package com.example.burrrrng.entity;
 
+import com.example.burrrrng.dto.UserRequestDto;
+import com.example.burrrrng.dto.UserUpdateRequestDto;
 import com.example.burrrrng.enums.UserRole;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -68,5 +70,20 @@ public class User extends BaseEntity {
         this.name = name;
         this.address = address;
         this.role = role;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void update(UserUpdateRequestDto userUpdateRequestDto) {
+
+    }
+
+    public void setPassword(String newPassword) {
     }
 }

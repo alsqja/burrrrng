@@ -2,6 +2,7 @@ package com.example.burrrrng.service;
 
 import com.example.burrrrng.config.CartCookieEncoder;
 import com.example.burrrrng.dto.CartMenuResDto;
+import com.example.burrrrng.dto.OrderAllResDto;
 import com.example.burrrrng.dto.OrderResDto;
 import com.example.burrrrng.entity.Menu;
 import com.example.burrrrng.entity.Order;
@@ -22,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -43,10 +45,6 @@ public class OrderServiceImpl implements OrderService {
         List<Long> menuIds = cartMenus.stream().map(CartMenuResDto::getId).toList();
         List<Menu> menus = menuRepository.findAllById(menuIds).stream().filter(i -> i.getStatus().equals(MenuStatus.NORMAL)).toList();
 
-        if (menuIds.size() != menus.size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "품절된 상품 입니다.");
-        }
-
         Long storeId = 0L;
         for (Menu menu : menus) {
             if (!menu.getStore().getId().equals(storeId) && !storeId.equals(0L)) {
@@ -54,9 +52,17 @@ public class OrderServiceImpl implements OrderService {
             }
             storeId = menu.getStore().getId();
         }
+        Store store = storeRepository.findByIdOrElseThrow(storeId);
+
+        if (LocalTime.now().isBefore(store.getOpenedAt()) || LocalTime.now().isAfter(store.getClosedAt())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "영업시간이 종료되었습니다.");
+        }
+
+        if (menuIds.size() != menus.size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "품절된 상품 입니다.");
+        }
 
         User user = userRepository.findByIdOrElseThrow(id);
-        Store store = storeRepository.findByIdOrElseThrow(storeId);
 
         Order order = new Order(user, store, OrderStatus.UNCHECKED);
         Order savedOrder = orderRepository.save(order);
@@ -72,5 +78,12 @@ public class OrderServiceImpl implements OrderService {
         cartCookieEncoder.deleteCartCookie(response);
 
         return new OrderResDto(savedOrder.getId(), savedOrder.getStatus(), totalPrice, savedOrder.getCreatedAt(), savedOrder.getUpdatedAt());
+    }
+
+    @Override
+    public List<OrderAllResDto> findAllUserOrder(Long userId) {
+        List<Object[]> results = orderRepository.findAllUserOrders(userId);
+        return results.stream()
+                .map(OrderAllResDto::new).toList();
     }
 }
