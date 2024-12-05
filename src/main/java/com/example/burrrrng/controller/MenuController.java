@@ -27,7 +27,8 @@ public class MenuController {
 
     @PatchMapping("/{storeId}/menus/{menuId}")
     public CommonResDto<ResponseMenuDto> updateMenu(
-            @PathVariable Long storeId, Long menuId,
+            @PathVariable Long storeId,
+            @PathVariable Long menuId,
             @Valid @RequestBody RequestMenuUpdateDto requestMenuUpdateDto, HttpServletRequest request){
         return menuService.updateMenu(storeId, menuId, requestMenuUpdateDto, request);
 
