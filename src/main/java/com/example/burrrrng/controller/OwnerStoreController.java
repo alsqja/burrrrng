@@ -2,6 +2,7 @@ package com.example.burrrrng.controller;
 
 
 import com.example.burrrrng.dto.RequestOwnerStoreDto;
+import com.example.burrrrng.dto.ResponseMenuDto;
 import com.example.burrrrng.dto.ResponseOwnerStoreDto;
 import com.example.burrrrng.dto.common.CommonListResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
@@ -34,6 +35,13 @@ public class OwnerStoreController {
             @PathVariable Long id,
             HttpServletRequest request){
         return ownerStoreService.viewOneStore(id, request);
+    }
+
+    @GetMapping("/{id}/menus")
+    public CommonListResDto<ResponseMenuDto> viewMenus(
+            @PathVariable Long id,
+            HttpServletRequest request){
+        return ownerStoreService.viewMenus(id, request);
     }
 
 }

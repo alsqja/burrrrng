@@ -19,9 +19,9 @@ public class RequestMenuUpdateDto {
 
     public RequestMenuUpdateDto(){}
 
-    public RequestMenuUpdateDto(String name, int price, String status) {
+    public RequestMenuUpdateDto(String name, int price, MenuStatus status) {
         this.name = name;
         this.price = price;
-        this.status = MenuStatus.valueOf(status);
+        this.status = status;
     }
 }
