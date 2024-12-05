@@ -2,6 +2,7 @@ package com.example.burrrrng.controller;
 
 import com.example.burrrrng.constants.Const;
 import com.example.burrrrng.dto.LoginRequestDto;
+import com.example.burrrrng.dto.PasswordUpdateRequestDto;
 import com.example.burrrrng.dto.OrderAllListResDto;
 import com.example.burrrrng.dto.UserRequestDto;
 import com.example.burrrrng.dto.UserResponseDto;
@@ -74,18 +75,15 @@ public class UserController {
 //        return ResponseEntity.ok().body("정상적으로 삭제되었습니다.");
 //    }
 
-//    @PatchMapping("/{id}/password")
-//    public ResponseEntity<CommonResDto<UserResponseDto>> updatePassword(@PathVariable Long id,
-//                                                                        @Valid @RequestBody UserRequestDto userRequestDto
-//                                                                        HttpSession session) {
-//
-//        User loginUser = session.getAttribute(Const.LOGIN_USER);
-//
-//
-//        userService.updatePassword(id, userRequestDto, loginUser);
-//
-//        return ResponseEntity.ok().body(new CommonResDto<>("비밀번호가 변경되었습니다.", null));
-//    }
+    @PatchMapping("/{id}/password")
+    public ResponseEntity<CommonResDto<UserResponseDto>> updatePassword(@PathVariable Long id,
+                                                                        @Valid @RequestBody PasswordUpdateRequestDto passwordUpdateRequestDto,
+                                                                        @SessionAttribute(name = Const.LOGIN_USER) User loginUser) {
+
+        userService.updatePassword(id, passwordUpdateRequestDto, loginUser);
+
+        return ResponseEntity.ok().body(new CommonResDto<>("비밀번호가 변경되었습니다.", null));
+    }
 
     @GetMapping("/{id}/orders")
     public ResponseEntity<CommonResDto<OrderAllListResDto>> findAllUserOrder(@PathVariable Long id) {

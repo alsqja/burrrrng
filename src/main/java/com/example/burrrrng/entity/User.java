@@ -46,6 +46,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+
     @Column
     private LocalDateTime deletedAt;
 
@@ -72,18 +73,15 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void setName(String name) {
+    public void updateName(String name) {
         this.name = name;
     }
 
-    public void setAddress(String address) {
+    public void updateAddress(String address) {
         this.address = address;
     }
 
-    public void update(UserUpdateRequestDto userUpdateRequestDto) {
-
-    }
-
-    public void setPassword(String newPassword) {
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 }
