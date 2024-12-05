@@ -17,6 +17,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDateTime;
@@ -26,7 +29,9 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "menu")
-@SQLDelete(sql = "UPDATE menu SET deleted_at = ? WHERE id = ?")
+@SQLDelete(sql = "UPDATE menu SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@FilterDef(name = "softDeleteFilter", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
+@Filter(name = "softDeleteFilter", condition = "deleted_at IS NULL")
 public class Menu extends BaseEntity {
 
     @Id
@@ -68,7 +73,6 @@ public class Menu extends BaseEntity {
         this.status = status;
     }
 
-    
 
     public void setPrice(@NotNull(message = "가격은 필수입니다.") @Min(value = 500, message = "가격은 최소 500원 이상이어야 합니다.") int price) {
         this.price = price;
