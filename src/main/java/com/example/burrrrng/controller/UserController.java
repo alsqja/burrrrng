@@ -5,6 +5,7 @@ import com.example.burrrrng.dto.LoginRequestDto;
 import com.example.burrrrng.dto.OrderAllListResDto;
 import com.example.burrrrng.dto.UserRequestDto;
 import com.example.burrrrng.dto.UserResponseDto;
+import com.example.burrrrng.dto.UserUpdateRequestDto;
 import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.entity.User;
 import com.example.burrrrng.service.OrderService;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,6 +55,37 @@ public class UserController {
         CommonResDto<UserResponseDto> result = new CommonResDto<>("조회 완료되었습니다.", userResponseDto);
         return ResponseEntity.ok().body(result);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CommonResDto<UserResponseDto>> updateUser(@PathVariable Long id,
+                                                                    @Valid @RequestBody UserUpdateRequestDto userUpdateRequestDto,
+                                                                    HttpSession session) {
+
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        UserResponseDto updatedUser = userService.updateUser(id, userUpdateRequestDto, loginUser);
+        CommonResDto<UserResponseDto> result = new CommonResDto<>("수정 완료되었습니다.", updatedUser);
+        return ResponseEntity.ok().body(result);
+    }
+
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+//        userService.deleteUser(id);
+//        return ResponseEntity.ok().body("정상적으로 삭제되었습니다.");
+//    }
+
+//    @PatchMapping("/{id}/password")
+//    public ResponseEntity<CommonResDto<UserResponseDto>> updatePassword(@PathVariable Long id,
+//                                                                        @Valid @RequestBody UserRequestDto userRequestDto
+//                                                                        HttpSession session) {
+//
+//        User loginUser = session.getAttribute(Const.LOGIN_USER);
+//
+//
+//        userService.updatePassword(id, userRequestDto, loginUser);
+//
+//        return ResponseEntity.ok().body(new CommonResDto<>("비밀번호가 변경되었습니다.", null));
+//    }
 
     @GetMapping("/{id}/orders")
     public ResponseEntity<CommonResDto<OrderAllListResDto>> findAllUserOrder(@PathVariable Long id) {
