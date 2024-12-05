@@ -14,6 +14,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.hibernate.annotations.SQLDelete;
 
@@ -36,7 +38,7 @@ public class Menu extends BaseEntity {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "store_id", referencedColumnName = "id")
     private Store store;
 
     @Column(nullable = false)
@@ -63,6 +65,20 @@ public class Menu extends BaseEntity {
         this.store = store;
         this.name = name;
         this.price = price;
+        this.status = status;
+    }
+
+    
+
+    public void setPrice(@NotNull(message = "가격은 필수입니다.") @Min(value = 500, message = "가격은 최소 500원 이상이어야 합니다.") int price) {
+        this.price = price;
+    }
+
+    public void setName(@NotNull(message = "이름은 필수입니다.") String name) {
+        this.name = name;
+    }
+
+    public void setStatus(MenuStatus status) {
         this.status = status;
     }
 }
