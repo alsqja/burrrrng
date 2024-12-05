@@ -75,7 +75,7 @@ public class OwnerStoreService {
     public CommonListResDto<ResponseOwnerStoreDto> viewAllStore(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
 
-        List<Store> stores = storeRepository.findByUserId(user.getId());
+        List<Store> stores = storeRepository.findByUserIdAndStatusNot(user.getId(), StoreStatus.CLOSED);
 
         List<ResponseOwnerStoreDto> storeDtos = new ArrayList<>();
 
@@ -99,8 +99,13 @@ public class OwnerStoreService {
     public CommonListResDto<ResponseOwnerStoreDto> viewOneStore(Long id, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
 
+
         Store store = ownerStoreRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+
+        if(store.getStatus() == StoreStatus.CLOSED){
+            throw new StoreNotFoundException("폐업된 가게입니다.");
+        }
 
         ResponseOwnerStoreDto storeDto = new ResponseOwnerStoreDto(
                 store.getId(),
@@ -122,6 +127,9 @@ public class OwnerStoreService {
         Store store = ownerStoreRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
 
+        if(store.getStatus() == StoreStatus.CLOSED){
+            throw new StoreNotFoundException("폐업된 가게입니다.");
+        }
         List<Menu> menus = menuRepository.findByStoreId(store.getId());
 
         List<ResponseMenuDto> menuDtos = new ArrayList<>();
@@ -138,6 +146,9 @@ public class OwnerStoreService {
 
         Store store = ownerStoreRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+        if(store.getStatus() == StoreStatus.CLOSED){
+            throw new StoreNotFoundException("폐업된 가게입니다.");
+        }
 
         if (requestOwnerStoreUpdateDto.getName() != null && !requestOwnerStoreUpdateDto.getName().trim().isEmpty()) {
             store.setName(requestOwnerStoreUpdateDto.getName());
