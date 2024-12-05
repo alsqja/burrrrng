@@ -29,8 +29,8 @@ import java.util.List;
 @Table(name = "store")
 @Getter
 @SQLDelete(sql = "UPDATE store SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
-@FilterDef(name = "softDeleteFilter", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
-@Filter(name = "softDeleteFilter", condition = "deleted_at IS NULL")
+@FilterDef(name = "softDeleteFilterStore", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
+@Filter(name = "softDeleteFilterStore", condition = "deleted_at IS NULL")
 public class Store extends BaseEntity {
 
     @Id
