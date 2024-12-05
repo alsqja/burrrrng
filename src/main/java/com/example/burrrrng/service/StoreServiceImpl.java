@@ -21,7 +21,6 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public List<StoreResDto> findAllStores() {
 
-        System.out.println(storeRepository.findAllStoresWithStar());
         return storeRepository.findAllStoresWithStar();
     }
 
