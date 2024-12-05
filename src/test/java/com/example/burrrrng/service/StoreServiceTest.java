@@ -46,10 +46,7 @@ public class StoreServiceTest {
 
         User user = userRepository.save(new User("test@email.com", "0000", "testUserName", "testUserAddress", UserRole.OWNER));
 
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(Const.LOGIN_USER, user);
-        request.setSession(session);
+        MockHttpServletRequest request = getMockHttpServletRequest(user);
 
         CommonResDto<ResponseOwnerStoreDto> saveStore = ownerStoreService.createStore(dto, request);
         CommonResDto<ResponseOwnerStoreDto> saveStore1 = ownerStoreService.createStore(dto, request);
@@ -61,6 +58,14 @@ public class StoreServiceTest {
 
         assertThat(saveStore.getData().getName()).isEqualTo("testStoreName");
         assertThat(e.getMessage()).isEqualTo("폐업 상태가 아닌 가게를 3개 이상 운영할 수 없습니다.");
+    }
+
+    public static MockHttpServletRequest getMockHttpServletRequest(User user) {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(Const.LOGIN_USER, user);
+        request.setSession(session);
+        return request;
     }
 
     @Test
@@ -100,10 +105,7 @@ public class StoreServiceTest {
             user = storeUser;
         }
 
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(Const.LOGIN_USER, user);
-        request.setSession(session);
+        MockHttpServletRequest request = getMockHttpServletRequest(user);
 
         List<StoreResDto> stores = storeService.findAllStores();
         CommonListResDto<ResponseOwnerStoreDto> ownerStores = ownerStoreService.viewAllStore(request);
