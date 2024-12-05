@@ -1,6 +1,8 @@
 package com.example.burrrrng.service;
 
+import com.example.burrrrng.config.PasswordEncoder;
 import com.example.burrrrng.dto.LoginRequestDto;
+import com.example.burrrrng.dto.PasswordUpdateRequestDto;
 import com.example.burrrrng.dto.UserRequestDto;
 import com.example.burrrrng.dto.UserResponseDto;
 import com.example.burrrrng.dto.UserUpdateRequestDto;
@@ -81,5 +83,29 @@ public class UserServiceTest {
 
         assertThat(userService.updateUser(saveUser3.getId(), dto3, user3).getName()).isEqualTo("testName");
         assertThat(userService.updateUser(saveUser3.getId(), dto3, user3).getAddress()).isEqualTo("patchTestAddress");
+
+        assertThat(userRepository.findByIdOrElseThrow(saveUser1.getId()).getName()).isEqualTo("patchTestName");
+    }
+
+    @Test
+    void 비밀번호수정_예외() {
+        UserResponseDto saveUser1 = userService.createUser(new UserRequestDto("testName", "test@email.com", "Alsqja@0000", "testAddress", UserRole.USER));
+        UserResponseDto saveUser2 = userService.createUser(new UserRequestDto("testName", "test1@email.com", "Alsqja@0000", "testAddress", UserRole.USER));
+        User user1 = userRepository.findByIdOrElseThrow(saveUser1.getId());
+        User user2 = userRepository.findByIdOrElseThrow(saveUser2.getId());
+
+        PasswordUpdateRequestDto dto = new PasswordUpdateRequestDto("Alsqja@0000", "new@0000");
+        PasswordUpdateRequestDto WrongPasswordDto = new PasswordUpdateRequestDto("alsqja@0000", "new@0000");
+
+        userService.updatePassword(saveUser1.getId(), dto, user1);
+
+        User updatedUser = userRepository.findByIdOrElseThrow(saveUser1.getId());
+
+        PasswordEncoder passwordEncoder = new PasswordEncoder();
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> userService.updatePassword(saveUser2.getId(), WrongPasswordDto, user2));
+
+        assertThat(passwordEncoder.matches("new@0000", updatedUser.getPassword())).isEqualTo(true);
+        assertThat(e.getReason()).isEqualTo("비밀번호가 일치하지 않습니다.");
     }
 }
