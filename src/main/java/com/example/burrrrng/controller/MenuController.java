@@ -9,6 +9,7 @@ import com.example.burrrrng.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,6 +35,13 @@ public class MenuController {
 
     }
 
+    @DeleteMapping("/{storeId}/menus/{menuId}")
+    public ResponseEntity<String> deleteMenu(
+            @PathVariable Long storeId,
+            @PathVariable Long menuId,
+            HttpServletRequest request) {
+        return menuService.deleteMenu(storeId, menuId, request);
+    }
 
 
 }
