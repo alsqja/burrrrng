@@ -17,8 +17,10 @@ import com.example.burrrrng.repository.StoreRepository;
 import com.example.burrrrng.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -102,9 +104,19 @@ public class MenuService {
                 updateMenu.getStatus().name()
         );
         return new CommonResDto<>("메뉴 수정 완료", responseMenuDto);
+    }
 
+    public ResponseEntity<String> deleteMenu(Long storeId, Long menuId, HttpServletRequest request){
+        User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
 
+        storeRepository.findById(storeId).orElseThrow(() -> new StoreNotFoundException("가게가 존재하지 않습니다."));
 
+        Menu menu = menuRepository.findByStoreIdAndMenuIdAndUserId(storeId, menuId, user.getId()).orElseThrow(() -> new MenuNotFoundException("삭제할 메뉴가 없습니다."));
+
+        menu.setDeletedAt(LocalDateTime.now());
+        menu.setStatus(MenuStatus.DELETE);
+        menuRepository.save(menu);
+        return ResponseEntity.ok("메뉴 삭제 완료");
     }
 
 }
