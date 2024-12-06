@@ -146,6 +146,10 @@ public class MenuService {
 
         Store store = storeRepository.findByIdOrElseThrow(storeId);
 
+        if (!order.getStore().getUser().getId().equals(id)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "본인 가게의 주문 내역만 받아올 수 있습니다.");
+        }
+
         if (!order.getStore().getId().equals(store.getId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "주문 정보와 가게가 일치하지 않습니다.");
         }
