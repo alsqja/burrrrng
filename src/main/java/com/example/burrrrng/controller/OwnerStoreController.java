@@ -7,6 +7,7 @@ import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.service.OwnerStoreService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,5 +52,14 @@ public class OwnerStoreController {
         return ownerStoreService.updateStore(id, requestOwnerStoreUpdateDto, request);
     }
 
+    @PatchMapping("/{storeId}/orders/{orderId}")
+    public CommonResDto<ResponseOrderUpdateDto> updateOrder(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            @RequestBody RequestOrderUpdateDto requestOrderUpdateDto,
+            HttpServletRequest request
+    ){
+        return ownerStoreService.updateOrder(storeId, orderId, requestOrderUpdateDto, request);
+    }
 
 }
