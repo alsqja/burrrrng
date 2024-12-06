@@ -1,16 +1,29 @@
 package com.example.burrrrng.controller;
 
-
-import com.example.burrrrng.dto.*;
+import com.example.burrrrng.dto.OrderMenuResDto;
+import com.example.burrrrng.dto.RequestOrderUpdateDto;
+import com.example.burrrrng.dto.RequestOwnerStoreDto;
+import com.example.burrrrng.dto.RequestOwnerStoreUpdateDto;
+import com.example.burrrrng.dto.ResponseMenuDto;
+import com.example.burrrrng.dto.ResponseOrderUpdateDto;
+import com.example.burrrrng.dto.ResponseOwnerStoreDto;
+import com.example.burrrrng.dto.ResponseOwnerStoreUpdateDto;
 import com.example.burrrrng.dto.common.CommonListResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
+import com.example.burrrrng.entity.User;
+import com.example.burrrrng.service.MenuService;
 import com.example.burrrrng.service.OwnerStoreService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @RestController
 @RequestMapping("/owner/stores")
@@ -18,6 +31,7 @@ import java.util.List;
 public class OwnerStoreController {
 
     private final OwnerStoreService ownerStoreService;
+    private final MenuService menuService;
 
     @PostMapping
     public CommonResDto<ResponseOwnerStoreDto> createStore(@RequestBody RequestOwnerStoreDto requestOwnerStoreDto, HttpServletRequest request) {
@@ -25,21 +39,21 @@ public class OwnerStoreController {
     }
 
     @GetMapping
-    public CommonListResDto<ResponseOwnerStoreDto> viewAllStore(HttpServletRequest request){
+    public CommonListResDto<ResponseOwnerStoreDto> viewAllStore(HttpServletRequest request) {
         return ownerStoreService.viewAllStore(request);
     }
 
     @GetMapping("/{id}")
     public CommonListResDto<ResponseOwnerStoreDto> viewOneStore(
             @PathVariable Long id,
-            HttpServletRequest request){
+            HttpServletRequest request) {
         return ownerStoreService.viewOneStore(id, request);
     }
 
     @GetMapping("/{id}/menus")
     public CommonListResDto<ResponseMenuDto> viewMenus(
             @PathVariable Long id,
-            HttpServletRequest request){
+            HttpServletRequest request) {
         return ownerStoreService.viewMenus(id, request);
     }
 
@@ -48,7 +62,7 @@ public class OwnerStoreController {
             @PathVariable Long id,
             @RequestBody RequestOwnerStoreUpdateDto requestOwnerStoreUpdateDto,
             HttpServletRequest request
-    ){
+    ) {
         return ownerStoreService.updateStore(id, requestOwnerStoreUpdateDto, request);
     }
 
@@ -58,8 +72,23 @@ public class OwnerStoreController {
             @PathVariable Long orderId,
             @RequestBody RequestOrderUpdateDto requestOrderUpdateDto,
             HttpServletRequest request
-    ){
+    ) {
         return ownerStoreService.updateOrder(storeId, orderId, requestOrderUpdateDto, request);
+    }
+
+    @GetMapping("/{storeId}/orders/{orderId}/menus")
+    public ResponseEntity<CommonListResDto<OrderMenuResDto>> findAllStoreOrderMenus(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            @SessionAttribute User loginUser
+    ) {
+
+        return ResponseEntity.ok()
+                .body(new CommonListResDto<>(
+                        "메뉴 조회 완료",
+                        menuService.findAllStoreOrderMenus(storeId, orderId, loginUser.getId()
+                        ))
+                );
     }
 
 }
