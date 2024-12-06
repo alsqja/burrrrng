@@ -24,7 +24,6 @@ import com.example.burrrrng.repository.MenuRepository;
 import com.example.burrrrng.repository.OrderRepository;
 import com.example.burrrrng.repository.OwnerStoreRepository;
 import com.example.burrrrng.repository.StoreRepository;
-import com.example.burrrrng.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,7 +40,6 @@ public class OwnerStoreService {
 
     private final OwnerStoreRepository ownerStoreRepository;
     private final StoreRepository storeRepository;
-    private final UserRepository userRepository;
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
 
@@ -194,8 +192,6 @@ public class OwnerStoreService {
     }
 
     public CommonResDto<ResponseOrderUpdateDto> updateOrder(Long storeId, Long orderId, RequestOrderUpdateDto requestOrderUpdateDto, HttpServletRequest request) {
-
-        User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
 
         Order order = (Order) orderRepository.findByStoreIdAndId(storeId, orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));

@@ -69,10 +69,10 @@ public class MenuService {
         Menu savedMenu = menuRepository.save(newMenu);
 
         ResponseMenuDto responseMenuDto = new ResponseMenuDto(
-                newMenu.getId(),
-                newMenu.getName(),
-                newMenu.getPrice(),
-                newMenu.getStatus().getValue()
+                savedMenu.getId(),
+                savedMenu.getName(),
+                savedMenu.getPrice(),
+                savedMenu.getStatus().getValue()
         );
 
         return new CommonResDto<>("메뉴생성완료", responseMenuDto);
