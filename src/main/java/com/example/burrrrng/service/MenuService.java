@@ -15,6 +15,7 @@ import com.example.burrrrng.exception.NameAndPriceException;
 import com.example.burrrrng.exception.SameMenuException;
 import com.example.burrrrng.exception.StoreNotFoundException;
 import com.example.burrrrng.exception.UnauthorizedException;
+import com.example.burrrrng.enums.StoreStatus;
 import com.example.burrrrng.repository.MenuRepository;
 import com.example.burrrrng.repository.OwnerStoreRepository;
 import com.example.burrrrng.repository.StoreRepository;
@@ -41,6 +42,9 @@ public class MenuService {
     public CommonResDto<ResponseMenuDto> createMenu(Long id, RequestMenuCreateDto requestMenuCreateDto, HttpServletRequest request) {
         Store store = storeRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 가게입니다.")); // -> 가게 지정
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
+        if(store.getStatus() == StoreStatus.CLOSED){
+            throw new StoreNotFoundException("폐업된 가게입니다.");
+        }
 
         if (requestMenuCreateDto.getName() == null || requestMenuCreateDto.getName().trim().isEmpty()) {
             throw new NameAndPriceException("메뉴 이름은 필수 입력 사항입니다.");
@@ -74,6 +78,9 @@ public class MenuService {
     public CommonResDto<ResponseMenuDto> updateMenu(Long storeId, Long menuId, RequestMenuUpdateDto requestMenuUpdateDto, HttpServletRequest request) {
         Store store = storeRepository.findById(storeId).orElse(null);
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
+        if(store.getStatus() == StoreStatus.CLOSED){
+            throw new StoreNotFoundException("폐업된 가게입니다.");
+        }
 
         if (store == null) {
             throw new StoreNotFoundException("가게가 존재하지 않습니다.");
@@ -114,6 +121,10 @@ public class MenuService {
 
     public ResponseEntity<String> deleteMenu(Long storeId, Long menuId, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
+        Store store = storeRepository.findById(storeId).orElse(null);
+        if(store.getStatus() == StoreStatus.CLOSED){
+            throw new StoreNotFoundException("폐업된 가게입니다.");
+        }
 
         storeRepository.findById(storeId).orElseThrow(() -> new StoreNotFoundException("가게가 존재하지 않습니다."));
 
