@@ -5,22 +5,19 @@ import com.example.burrrrng.constants.Const;
 import com.example.burrrrng.dto.*;
 import com.example.burrrrng.dto.common.CommonListResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
-import com.example.burrrrng.entity.Menu;
-import com.example.burrrrng.entity.Store;
-import com.example.burrrrng.entity.User;
+import com.example.burrrrng.entity.*;
 import com.example.burrrrng.enums.StoreStatus;
 import com.example.burrrrng.enums.UserRole;
 import com.example.burrrrng.exception.StoreLimitException;
 import com.example.burrrrng.exception.StoreNotFoundException;
 import com.example.burrrrng.exception.UnauthorizedException;
-import com.example.burrrrng.repository.MenuRepository;
-import com.example.burrrrng.repository.OwnerStoreRepository;
-import com.example.burrrrng.repository.StoreRepository;
-import com.example.burrrrng.repository.UserRepository;
+import com.example.burrrrng.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -35,6 +32,8 @@ public class OwnerStoreService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
+    private final OrderRepository orderRepository;
+
 
     public CommonResDto<ResponseOwnerStoreDto> createStore(RequestOwnerStoreDto requestOwnerStoreDto, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
@@ -185,4 +184,71 @@ public class OwnerStoreService {
 
         return new CommonResDto<>("가게 수정 완료", responseStoreDto);
     }
+
+    public CommonResDto<ResponseOrderUpdateDto> updateOrder(Long storeId, Long orderId, RequestOrderUpdateDto requestOrderUpdateDto, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
+
+        Order order = (Order) orderRepository.findByStoreIdAndId(storeId, orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
+
+        order.setStatus(requestOrderUpdateDto.getStatus());
+
+        orderRepository.save(order);
+
+        int totalPrice = order.getOrderMenus().stream()
+                .mapToInt(orderMenu -> orderMenu.getMenu().getPrice() * orderMenu.getAmount())
+                .sum();
+
+        ResponseOrderUpdateDto responseDto = new ResponseOrderUpdateDto(
+                order.getId(),
+                order.getStatus(),
+                totalPrice,
+                order.getCreatedAt(),
+                order.getUpdatedAt()
+        );
+
+        return new CommonResDto<>("해당 주문의 상태가 변경 되었습니다.", responseDto);
+    }
+
+    public CommonListResDto<ResponseViewOrderDto> viewStoreOrders(Long id, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
+
+        Store store = ownerStoreRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+
+        if(store.getStatus() == StoreStatus.CLOSED){
+            throw new StoreNotFoundException("폐업된 가게입니다.");
+        }
+
+        List<Order> orders = store.getOrders();
+
+        orders.sort((o1, o2) -> o2.getUpdatedAt().compareTo(o1.getUpdatedAt()));
+
+        List<ResponseViewOrderDto> orderDtos = new ArrayList<>();
+
+        for (Order order : orders) {
+            String mainMenu = "";
+            double maxPrice = 0.0;
+            int totalMenuCount = order.getOrderMenus().size();
+            for (OrderMenu orderMenu : order.getOrderMenus()) {
+                double menuPrice = orderMenu.getMenu().getPrice();
+                if (menuPrice > maxPrice) {
+                    maxPrice = menuPrice;
+                    mainMenu = orderMenu.getMenu().getName();
+                }
+            }
+            ResponseViewOrderDto dto = new ResponseViewOrderDto(
+                    order.getId(),
+                    order.getStatus(),
+                    order.getUser().getAddress(),
+                    mainMenu,
+                    totalMenuCount
+            );
+            orderDtos.add(dto);
+        }
+
+        return new CommonListResDto<>("주문내역 조회 완료", orderDtos);
+
+    }
+
 }

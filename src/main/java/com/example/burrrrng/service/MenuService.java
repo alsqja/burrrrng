@@ -2,26 +2,35 @@ package com.example.burrrrng.service;
 
 
 import com.example.burrrrng.constants.Const;
+import com.example.burrrrng.dto.OrderMenuResDto;
 import com.example.burrrrng.dto.RequestMenuCreateDto;
 import com.example.burrrrng.dto.RequestMenuUpdateDto;
 import com.example.burrrrng.dto.ResponseMenuDto;
 import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.entity.Menu;
+import com.example.burrrrng.entity.Order;
 import com.example.burrrrng.entity.Store;
 import com.example.burrrrng.entity.User;
 import com.example.burrrrng.enums.MenuStatus;
 import com.example.burrrrng.enums.StoreStatus;
-import com.example.burrrrng.exception.*;
+import com.example.burrrrng.exception.MenuNotFoundException;
+import com.example.burrrrng.exception.NameAndPriceException;
+import com.example.burrrrng.exception.SameMenuException;
+import com.example.burrrrng.exception.StoreNotFoundException;
+import com.example.burrrrng.exception.UnauthorizedException;
 import com.example.burrrrng.repository.MenuRepository;
+import com.example.burrrrng.repository.OrderMenuRepository;
+import com.example.burrrrng.repository.OrderRepository;
 import com.example.burrrrng.repository.OwnerStoreRepository;
 import com.example.burrrrng.repository.StoreRepository;
 import com.example.burrrrng.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,11 +41,13 @@ public class MenuService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
+    private final OrderRepository orderRepository;
+    private final OrderMenuRepository orderMenuRepository;
 
     public CommonResDto<ResponseMenuDto> createMenu(Long id, RequestMenuCreateDto requestMenuCreateDto, HttpServletRequest request) {
-        Store store = storeRepository.findById(id).orElse(null); // -> 가게 지정
+        Store store = storeRepository.findByIdOrElseThrow(id); // -> 가게 지정
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
-        if(store.getStatus() == StoreStatus.CLOSED){
+        if (store.getStatus() == StoreStatus.CLOSED) {
             throw new StoreNotFoundException("폐업된 가게입니다.");
         }
 
@@ -48,7 +59,7 @@ public class MenuService {
             throw new NameAndPriceException("메뉴 가격은 필수 입력 사항입니다.");
         }
 
-        if(!Objects.equals(store.getUser().getId(), user.getId())){
+        if (!Objects.equals(store.getUser().getId(), user.getId())) {
             throw new UnauthorizedException("본인 가게의 메뉴만 작성 가능합니다");
         }
         menuRepository.findByStoreAndName(store, requestMenuCreateDto.getName()).ifPresent(menu -> {
@@ -56,7 +67,7 @@ public class MenuService {
         });
 
         MenuStatus status = MenuStatus.NORMAL;
-        Menu newMenu = new Menu(user, store, requestMenuCreateDto.getName(), requestMenuCreateDto.getPrice(), status );
+        Menu newMenu = new Menu(user, store, requestMenuCreateDto.getName(), requestMenuCreateDto.getPrice(), status);
 
         Menu savedMenu = menuRepository.save(newMenu);
 
@@ -70,26 +81,26 @@ public class MenuService {
     }
 
     public CommonResDto<ResponseMenuDto> updateMenu(Long storeId, Long menuId, RequestMenuUpdateDto requestMenuUpdateDto, HttpServletRequest request) {
-        Store store = storeRepository.findById(storeId).orElse(null);
+        Store store = storeRepository.findByIdOrElseThrow(storeId);
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
-        if(store.getStatus() == StoreStatus.CLOSED){
+
+        if (store.getStatus() == StoreStatus.CLOSED) {
             throw new StoreNotFoundException("폐업된 가게입니다.");
         }
 
-        if(store == null){
-            throw new StoreNotFoundException("가게가 존재하지 않습니다.");
-        }
         Menu menu = menuRepository.findByStoreAndId(store, menuId).orElse(null);
 
-        if(menu == null){
+        if (menu == null) {
             throw new MenuNotFoundException("수정할 메뉴가 없습니다.");
         }
+
         List<Menu> menus = menuRepository.findByStoreId(storeId);
-        for(Menu m : menus){
-            if(m.getDeletedAt() == null && m.getName().equals(requestMenuUpdateDto.getName())){
+        for (Menu m : menus) {
+            if (m.getDeletedAt() == null && m.getName().equals(requestMenuUpdateDto.getName())) {
                 throw new SameMenuException("같은 이름을 가진 메뉴가 이미 있습니다.");
             }
         }
+
         if (requestMenuUpdateDto.getName() != null && !requestMenuUpdateDto.getName().trim().isEmpty()) {
             menu.setName(requestMenuUpdateDto.getName());
         }
@@ -113,20 +124,44 @@ public class MenuService {
         return new CommonResDto<>("메뉴 수정 완료", responseMenuDto);
     }
 
-    public ResponseEntity<String> deleteMenu(Long storeId, Long menuId, HttpServletRequest request){
+    public ResponseEntity<String> deleteMenu(Long storeId, Long menuId, HttpServletRequest request) {
+
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
-        Store store = storeRepository.findById(storeId).orElse(null);
-        if(store.getStatus() == StoreStatus.CLOSED){
+
+        Store store = storeRepository.findByIdOrElseThrow(storeId);
+
+        if (store.getStatus() == StoreStatus.CLOSED) {
             throw new StoreNotFoundException("폐업된 가게입니다.");
         }
 
-        storeRepository.findById(storeId).orElseThrow(() -> new StoreNotFoundException("가게가 존재하지 않습니다."));
-
         Menu menu = menuRepository.findByStoreIdAndMenuIdAndUserId(storeId, menuId, user.getId()).orElseThrow(() -> new MenuNotFoundException("삭제할 메뉴가 없습니다."));
 
-        menu.setDeletedAt(LocalDateTime.now());
-        menuRepository.save(menu);
+        menuRepository.delete(menu);
         return ResponseEntity.ok("메뉴 삭제 완료");
     }
 
+    public List<OrderMenuResDto> findAllStoreOrderMenus(Long storeId, Long orderId, Long id) {
+
+        Order order = orderRepository.findByIdOrElseThrow(orderId);
+
+        Store store = storeRepository.findByIdOrElseThrow(storeId);
+
+        if (!order.getStore().getUser().getId().equals(id)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "본인 가게의 주문 내역만 받아올 수 있습니다.");
+        }
+
+        if (!order.getStore().getId().equals(store.getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "주문 정보와 가게가 일치하지 않습니다.");
+        }
+
+        return orderMenuRepository.findByOrder(order).stream().map(i -> new OrderMenuResDto(
+                i.getId(),
+                i.getOrder().getId(),
+                i.getMenu().getId(),
+                i.getMenu().getName(),
+                i.getAmount(),
+                i.getCreatedAt(),
+                i.getUpdatedAt()
+        )).toList();
+    }
 }
