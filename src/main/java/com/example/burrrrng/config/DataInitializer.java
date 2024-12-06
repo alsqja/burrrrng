@@ -1,7 +1,11 @@
 package com.example.burrrrng.config;
 
+import com.example.burrrrng.entity.Menu;
+import com.example.burrrrng.entity.Order;
 import com.example.burrrrng.entity.Store;
 import com.example.burrrrng.entity.User;
+import com.example.burrrrng.enums.MenuStatus;
+import com.example.burrrrng.enums.OrderStatus;
 import com.example.burrrrng.enums.StoreStatus;
 import com.example.burrrrng.enums.UserRole;
 import com.example.burrrrng.repository.MenuRepository;
@@ -35,18 +39,18 @@ public class DataInitializer {
 
         storeRepository.save(store);
 
-//        Order order = new Order(user, store, OrderStatus.UNCHECKED);
-//
-//        orderRepository.save(order);
+        Order order = new Order(user, store, OrderStatus.UNCHECKED);
 
-//        for (int i = 1; i <= 3; i++) {
-//            Menu menu = new Menu(user, store, "menuName" + i, 10000 * i, MenuStatus.NORMAL);
-//            menuRepository.save(menu);
-//        }
-//
-//        for (int i = 4; i <= 6; i++) {
-//            Menu menu = new Menu(user, store, "menuName" + i, 12000, MenuStatus.SOLDOUT);
-//            menuRepository.save(menu);
-//        }
+        orderRepository.save(order);
+
+        for (int i = 1; i <= 3; i++) {
+            Menu menu = new Menu(user, store, "menuName" + i, 10000 * i, MenuStatus.NORMAL);
+            menuRepository.save(menu);
+        }
+
+        for (int i = 4; i <= 6; i++) {
+            Menu menu = new Menu(user, store, "menuName" + i, 12000, MenuStatus.SOLDOUT);
+            menuRepository.save(menu);
+        }
     }
 }
