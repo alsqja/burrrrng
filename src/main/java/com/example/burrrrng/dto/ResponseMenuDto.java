@@ -6,12 +6,10 @@ import lombok.Getter;
 
 @Getter
 public class ResponseMenuDto implements ResDtoDataType {
-    private Long id;
-    private String name;
-    private int price;
-    private String status;
-
-    public ResponseMenuDto() {}
+    private final Long id;
+    private final String name;
+    private final int price;
+    private final String status;
 
     public ResponseMenuDto(Long id, String name, int price, String status) {
         this.id = id;

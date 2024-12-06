@@ -26,11 +26,13 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreAllResDto findById(Long id) {
+
         return new StoreAllResDto(storeRepository.findByIdOrElseThrow(id));
     }
 
     @Override
     public List<MenuResDto> findAllStoreMenus(Long id) {
+        
         Store store = storeRepository.findByIdOrElseThrow(id);
 
         return menuRepository.findByStore(store).stream().map(MenuResDto::new).toList();

@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 
 @Getter
 public class UserResponseDto implements ResDtoDataType {
-    private Long id;
-    private String name;
-    private String email;
-    private String address;
-    private String role;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private final Long id;
+    private final String name;
+    private final String email;
+    private final String address;
+    private final String role;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public UserResponseDto(Long id, String name, String email, String address, String role, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;

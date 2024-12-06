@@ -13,11 +13,8 @@ public class StoreResDto implements ResDtoDataType {
     private final String name;
     private final double star;
     private final int minPrice;
-
-    // TODO : change date type
     private final LocalTime openedAt;
     private final LocalTime closedAt;
-
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 

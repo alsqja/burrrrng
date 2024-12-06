@@ -9,13 +9,11 @@ import java.time.LocalDateTime;
 @Getter
 public class ResponseOrderUpdateDto implements ResDtoDataType {
 
-    private  Long id;
-    private  OrderStatus status;
-    private  int totalPrice;
-    private  LocalDateTime createdAt;
-    private  LocalDateTime updatedAt;
-
-    public ResponseOrderUpdateDto(){}
+    private final Long id;
+    private final OrderStatus status;
+    private final int totalPrice;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public ResponseOrderUpdateDto(Long id, OrderStatus status, int totalPrice, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;

@@ -42,16 +42,19 @@ public class CartCookieEncoder {
     }
 
     public List<CartMenuResDto> getCartFromCookies(HttpServletRequest request) {
+
         Cookie[] cookies = request.getCookies();
+
         if (cookies == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "장바구니에 상품을 담아주세요.");
         }
+
         for (Cookie cookie : cookies) {
             if (Const.CART_COOKIE_NAME.equals(cookie.getName())) {
                 try {
 
                     String decodedCartJson = URLDecoder.decode(cookie.getValue(), "UTF-8");
-                    
+
                     return objectMapper.readValue(decodedCartJson, new TypeReference<List<CartMenuResDto>>() {
                     });
                 } catch (Exception e) {

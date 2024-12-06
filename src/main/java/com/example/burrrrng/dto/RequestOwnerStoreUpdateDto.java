@@ -8,15 +8,12 @@ import java.time.LocalTime;
 @Getter
 public class RequestOwnerStoreUpdateDto {
 
-    private Long storeId;
-    private String name;
-    private int minPrice;
-    private LocalTime openedAt;
-    private LocalTime closedAt;
-    private StoreStatus status;
-
-    public RequestOwnerStoreUpdateDto() {
-    }
+    private final Long storeId;
+    private final String name;
+    private final int minPrice;
+    private final LocalTime openedAt;
+    private final LocalTime closedAt;
+    private final StoreStatus status;
 
     public RequestOwnerStoreUpdateDto(Long storeId, String name, int minPrice, LocalTime openedAt, LocalTime closedAt, StoreStatus status) {
         this.storeId = storeId;

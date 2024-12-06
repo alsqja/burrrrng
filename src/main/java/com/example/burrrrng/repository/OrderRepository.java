@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
+    
     default Order findByIdOrElseThrow(Long orderId) {
         return findById(orderId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 주문 입니다."));
     }

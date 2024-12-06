@@ -8,16 +8,13 @@ import java.time.LocalTime;
 @Getter
 public class ResponseOwnerStoreUpdateDto implements ResDtoDataType {
 
-    private Long id;
-    private String name;
-    private int minPrice;
-    private LocalTime openedAt;
-    private LocalTime closedAt;
+    private final Long id;
+    private final String name;
+    private final int minPrice;
+    private final LocalTime openedAt;
+    private final LocalTime closedAt;
 
-    public ResponseOwnerStoreUpdateDto() {
-    }
-
-    public ResponseOwnerStoreUpdateDto(Long id,String name, int minPrice, LocalTime openedAt, LocalTime closedAt) {
+    public ResponseOwnerStoreUpdateDto(Long id, String name, int minPrice, LocalTime openedAt, LocalTime closedAt) {
         this.id = id;
         this.name = name;
         this.minPrice = minPrice;

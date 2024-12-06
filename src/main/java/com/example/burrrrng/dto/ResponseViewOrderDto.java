@@ -7,13 +7,11 @@ import lombok.Getter;
 @Getter
 public class ResponseViewOrderDto implements ResDtoDataType {
 
-    private Long id;
-    private OrderStatus orderStatus;
-    private String address;
-    private String mainMenu;
-    private int totalMenuCount;
-
-    public ResponseViewOrderDto() {}
+    private final Long id;
+    private final OrderStatus orderStatus;
+    private final String address;
+    private final String mainMenu;
+    private final int totalMenuCount;
 
     public ResponseViewOrderDto(Long id, OrderStatus orderStatus, String address, String mainMenu, int totalMenuCount) {
         this.id = id;
