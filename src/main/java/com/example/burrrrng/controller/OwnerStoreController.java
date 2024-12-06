@@ -4,10 +4,13 @@ package com.example.burrrrng.controller;
 import com.example.burrrrng.dto.*;
 import com.example.burrrrng.dto.common.CommonListResDto;
 import com.example.burrrrng.dto.common.CommonResDto;
+import com.example.burrrrng.entity.User;
+import com.example.burrrrng.service.MenuService;
 import com.example.burrrrng.service.OwnerStoreService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.List;
 public class OwnerStoreController {
 
     private final OwnerStoreService ownerStoreService;
+    private MenuService menuService;
 
     @PostMapping
     public CommonResDto<ResponseOwnerStoreDto> createStore(@RequestBody RequestOwnerStoreDto requestOwnerStoreDto, HttpServletRequest request) {
@@ -60,6 +64,21 @@ public class OwnerStoreController {
             HttpServletRequest request
     ){
         return ownerStoreService.updateOrder(storeId, orderId, requestOrderUpdateDto, request);
+    }
+
+    @GetMapping("/{storeId}/orders/{orderId}/menus")
+    public ResponseEntity<CommonListResDto<OrderMenuResDto>> findAllStoreOrderMenus(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            @SessionAttribute User loginUser
+    ) {
+
+        return ResponseEntity.ok()
+                .body(new CommonListResDto<>(
+                        "메뉴 조회 완료",
+                        menuService.findAllStoreOrderMenus(storeId, orderId, loginUser.getId()
+                        ))
+                );
     }
 
     @GetMapping("/{storeId}/orders")
