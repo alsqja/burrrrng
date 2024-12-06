@@ -17,10 +17,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,8 +28,7 @@ import java.util.List;
 @Getter
 @Table(name = "menu")
 @SQLDelete(sql = "UPDATE menu SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
-@FilterDef(name = "softDeleteFilterMenu", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
-@Filter(name = "softDeleteFilterMenu", condition = "deleted_at IS NULL")
+@SQLRestriction("deleted_at IS NULL")
 public class Menu extends BaseEntity {
 
     @Id

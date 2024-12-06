@@ -13,10 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,10 +24,9 @@ import java.util.List;
 @Table(name = "user")
 @Getter
 @SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
-@FilterDef(name = "softDeleteFilterUser", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
-@Filter(name = "softDeleteFilterUser", condition = "deleted_at IS NULL")
+@SQLRestriction("deleted_at IS NULL")
 public class User extends BaseEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
