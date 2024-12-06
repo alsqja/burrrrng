@@ -229,7 +229,7 @@ public class OwnerStoreService {
         for (Order order : orders) {
             String mainMenu = "";
             double maxPrice = 0.0;
-
+            int totalMenuCount = order.getOrderMenus().size();
             for (OrderMenu orderMenu : order.getOrderMenus()) {
                 double menuPrice = orderMenu.getMenu().getPrice();
                 if (menuPrice > maxPrice) {
@@ -241,7 +241,8 @@ public class OwnerStoreService {
                     order.getId(),
                     order.getStatus(),
                     order.getUser().getAddress(),
-                    mainMenu
+                    mainMenu,
+                    totalMenuCount
             );
             orderDtos.add(dto);
         }

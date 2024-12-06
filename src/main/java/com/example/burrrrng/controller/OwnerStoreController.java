@@ -21,7 +21,7 @@ import java.util.List;
 public class OwnerStoreController {
 
     private final OwnerStoreService ownerStoreService;
-    private MenuService menuService;
+    private final MenuService menuService;
 
     @PostMapping
     public CommonResDto<ResponseOwnerStoreDto> createStore(@RequestBody RequestOwnerStoreDto requestOwnerStoreDto, HttpServletRequest request) {

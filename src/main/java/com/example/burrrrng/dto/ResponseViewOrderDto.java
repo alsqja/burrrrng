@@ -11,14 +11,16 @@ public class ResponseViewOrderDto implements ResDtoDataType {
     private OrderStatus orderStatus;
     private String address;
     private String mainMenu;
+    private int totalMenuCount;
 
     public ResponseViewOrderDto() {}
 
-    public ResponseViewOrderDto(Long id, OrderStatus orderStatus, String address, String mainMenu) {
+    public ResponseViewOrderDto(Long id, OrderStatus orderStatus, String address, String mainMenu, int totalMenuCount) {
         this.id = id;
         this.orderStatus = orderStatus;
         this.address = address;
         this.mainMenu = mainMenu;
+        this.totalMenuCount = totalMenuCount;
     }
 
 }
