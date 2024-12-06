@@ -1,9 +1,5 @@
 package com.example.burrrrng.config;
 
-import com.example.burrrrng.entity.Store;
-import com.example.burrrrng.entity.User;
-import com.example.burrrrng.enums.StoreStatus;
-import com.example.burrrrng.enums.UserRole;
 import com.example.burrrrng.repository.MenuRepository;
 import com.example.burrrrng.repository.OrderRepository;
 import com.example.burrrrng.repository.StoreRepository;
@@ -11,8 +7,6 @@ import com.example.burrrrng.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalTime;
 
 @Component
 @RequiredArgsConstructor
@@ -26,14 +20,14 @@ public class DataInitializer {
     @PostConstruct
     public void init() {
 
-        PasswordEncoder passwordEncoder = new PasswordEncoder();
-        User user = new User("email@email.com", passwordEncoder.encode("0000"), "name", "address", UserRole.USER);
-
-        userRepository.save(user);
-
-        Store store = new Store(user, "storeName", LocalTime.of(10, 0), LocalTime.of(21, 0), 12000, StoreStatus.OPENED);
-
-        storeRepository.save(store);
+//        PasswordEncoder passwordEncoder = new PasswordEncoder();
+//        User user = new User("email@email.com", passwordEncoder.encode("0000"), "name", "address", UserRole.USER);
+//
+//        userRepository.save(user);
+//
+//        Store store = new Store(user, "storeName", LocalTime.of(10, 0), LocalTime.of(21, 0), 12000, StoreStatus.OPENED);
+//
+//        storeRepository.save(store);
 
 //        Order order = new Order(user, store, OrderStatus.UNCHECKED);
 //

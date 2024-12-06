@@ -10,16 +10,22 @@ import com.example.burrrrng.entity.Menu;
 import com.example.burrrrng.entity.Store;
 import com.example.burrrrng.entity.User;
 import com.example.burrrrng.enums.MenuStatus;
+import com.example.burrrrng.exception.MenuNotFoundException;
+import com.example.burrrrng.exception.NameAndPriceException;
+import com.example.burrrrng.exception.SameMenuException;
+import com.example.burrrrng.exception.StoreNotFoundException;
+import com.example.burrrrng.exception.UnauthorizedException;
 import com.example.burrrrng.enums.StoreStatus;
-import com.example.burrrrng.exception.*;
 import com.example.burrrrng.repository.MenuRepository;
 import com.example.burrrrng.repository.OwnerStoreRepository;
 import com.example.burrrrng.repository.StoreRepository;
 import com.example.burrrrng.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +40,7 @@ public class MenuService {
     private final MenuRepository menuRepository;
 
     public CommonResDto<ResponseMenuDto> createMenu(Long id, RequestMenuCreateDto requestMenuCreateDto, HttpServletRequest request) {
-        Store store = storeRepository.findById(id).orElse(null); // -> 가게 지정
+        Store store = storeRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 가게입니다.")); // -> 가게 지정
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
         if(store.getStatus() == StoreStatus.CLOSED){
             throw new StoreNotFoundException("폐업된 가게입니다.");
@@ -48,7 +54,7 @@ public class MenuService {
             throw new NameAndPriceException("메뉴 가격은 필수 입력 사항입니다.");
         }
 
-        if(!Objects.equals(store.getUser().getId(), user.getId())){
+        if (!Objects.equals(store.getUser().getId(), user.getId())) {
             throw new UnauthorizedException("본인 가게의 메뉴만 작성 가능합니다");
         }
         menuRepository.findByStoreAndName(store, requestMenuCreateDto.getName()).ifPresent(menu -> {
@@ -56,7 +62,7 @@ public class MenuService {
         });
 
         MenuStatus status = MenuStatus.NORMAL;
-        Menu newMenu = new Menu(user, store, requestMenuCreateDto.getName(), requestMenuCreateDto.getPrice(), status );
+        Menu newMenu = new Menu(user, store, requestMenuCreateDto.getName(), requestMenuCreateDto.getPrice(), status);
 
         Menu savedMenu = menuRepository.save(newMenu);
 
@@ -76,17 +82,17 @@ public class MenuService {
             throw new StoreNotFoundException("폐업된 가게입니다.");
         }
 
-        if(store == null){
+        if (store == null) {
             throw new StoreNotFoundException("가게가 존재하지 않습니다.");
         }
         Menu menu = menuRepository.findByStoreAndId(store, menuId).orElse(null);
 
-        if(menu == null){
+        if (menu == null) {
             throw new MenuNotFoundException("수정할 메뉴가 없습니다.");
         }
         List<Menu> menus = menuRepository.findByStoreId(storeId);
-        for(Menu m : menus){
-            if(m.getDeletedAt() == null && m.getName().equals(requestMenuUpdateDto.getName())){
+        for (Menu m : menus) {
+            if (m.getDeletedAt() == null && m.getName().equals(requestMenuUpdateDto.getName())) {
                 throw new SameMenuException("같은 이름을 가진 메뉴가 이미 있습니다.");
             }
         }
@@ -113,7 +119,7 @@ public class MenuService {
         return new CommonResDto<>("메뉴 수정 완료", responseMenuDto);
     }
 
-    public ResponseEntity<String> deleteMenu(Long storeId, Long menuId, HttpServletRequest request){
+    public ResponseEntity<String> deleteMenu(Long storeId, Long menuId, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Const.LOGIN_USER);
         Store store = storeRepository.findById(storeId).orElse(null);
         if(store.getStatus() == StoreStatus.CLOSED){
