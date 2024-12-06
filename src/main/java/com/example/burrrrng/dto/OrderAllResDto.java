@@ -11,7 +11,7 @@ public class OrderAllResDto implements ResDtoDataType {
 
     private final Long id;
     private final String storeName;
-    private final String status;  // OrderStatus 그대로 사용
+    private final String status;
     private final String mainMenu;
     private final int totalMenuCount;
     private final int totalPrice;

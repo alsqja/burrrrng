@@ -8,7 +8,6 @@ import java.util.List;
 public class CartReqDto {
 
     private final List<Long> menus;
-
     private final List<Integer> amounts;
 
     public CartReqDto(List<Long> menus, List<Integer> amounts) {

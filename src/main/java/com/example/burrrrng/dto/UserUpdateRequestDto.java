@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class UserUpdateRequestDto {
+    
     private final String name;
     private final String address;
 

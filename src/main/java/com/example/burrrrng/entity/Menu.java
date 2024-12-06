@@ -73,20 +73,15 @@ public class Menu extends BaseEntity {
         this.status = status;
     }
 
-
-    public void setPrice(@NotNull(message = "가격은 필수입니다.") @Min(value = 500, message = "가격은 최소 500원 이상이어야 합니다.") int price) {
+    public void updatePrice(@NotNull(message = "가격은 필수입니다.") @Min(value = 500, message = "가격은 최소 500원 이상이어야 합니다.") int price) {
         this.price = price;
     }
 
-    public void setName(@NotNull(message = "이름은 필수입니다.") String name) {
+    public void updateName(@NotNull(message = "이름은 필수입니다.") String name) {
         this.name = name;
     }
 
-    public void setStatus(MenuStatus status) {
+    public void updateStatus(MenuStatus status) {
         this.status = status;
-    }
-
-    public void setDeletedAt(LocalDateTime now) {
-        this.deletedAt = now;
     }
 }

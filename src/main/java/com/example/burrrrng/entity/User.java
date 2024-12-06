@@ -29,6 +29,7 @@ import java.util.List;
 @FilterDef(name = "softDeleteFilterUser", parameters = @ParamDef(name = "deletedAt", type = LocalDateTime.class))
 @Filter(name = "softDeleteFilterUser", condition = "deleted_at IS NULL")
 public class User extends BaseEntity {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

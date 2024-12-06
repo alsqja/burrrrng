@@ -80,7 +80,4 @@ public class Store extends BaseEntity {
         this.status = status;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
 }

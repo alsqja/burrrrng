@@ -29,6 +29,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewResDto save(Long orderId, Long userId, CreateReviewReqDto dto) {
+
         Order order = orderRepository.findByIdOrElseThrow(orderId);
         User user = userRepository.findByIdOrElseThrow(userId);
 
@@ -43,6 +44,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ListReviewResDto findAllStoreReviews(Long storeId) {
+        
         Store store = storeRepository.findByIdOrElseThrow(storeId);
 
         List<ReviewResDto> reviews = reviewRepository.findAllStoreReviews(storeId);

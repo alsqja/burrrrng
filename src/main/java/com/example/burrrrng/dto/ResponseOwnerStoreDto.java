@@ -1,6 +1,5 @@
 package com.example.burrrrng.dto;
 
-import com.example.burrrrng.dto.common.CommonResDto;
 import com.example.burrrrng.dto.common.ResDtoDataType;
 import lombok.Getter;
 
@@ -9,19 +8,27 @@ import java.time.LocalTime;
 
 @Getter
 public class ResponseOwnerStoreDto implements ResDtoDataType {
-    private Long id;
-    private String name;
-    private int minPrice;
-    private String status;
-    private LocalTime openedAt;
-    private LocalTime closedAt;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
+    private final Long id;
+    private final String name;
+    private final int minPrice;
+    private final String status;
+    private final LocalTime openedAt;
+    private final LocalTime closedAt;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
 
-    public ResponseOwnerStoreDto(Long id, String name, int minPrice, String status,
-                                 LocalTime openedAt, LocalTime closedAt,
-                                 LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ResponseOwnerStoreDto(
+            Long id,
+            String name,
+            int minPrice,
+            String status,
+            LocalTime openedAt,
+            LocalTime closedAt,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
         this.id = id;
         this.name = name;
         this.minPrice = minPrice;

@@ -82,7 +82,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderAllResDto> findAllUserOrder(Long userId) {
+
         List<Object[]> results = orderRepository.findAllUserOrders(userId);
+        
         return results.stream()
                 .map(OrderAllResDto::new).toList();
     }
