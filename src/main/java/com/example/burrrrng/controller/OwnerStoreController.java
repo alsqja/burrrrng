@@ -62,4 +62,12 @@ public class OwnerStoreController {
         return ownerStoreService.updateOrder(storeId, orderId, requestOrderUpdateDto, request);
     }
 
+    @GetMapping("/{storeId}/orders")
+    public CommonListResDto<ResponseViewOrderDto> viewStoreOrders(
+            @PathVariable Long storeId,
+            HttpServletRequest request
+    ){
+        return ownerStoreService.viewStoreOrders(storeId, request);
+    }
+
 }
