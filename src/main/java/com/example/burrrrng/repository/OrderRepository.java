@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
     default Order findByIdOrElseThrow(Long orderId) {
@@ -35,4 +36,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                 GROUP BY o.id, s.id
             """, nativeQuery = true)
     List<Object[]> findAllUserOrders(Long id);
+
+    Optional<Object> findByStoreIdAndId(Long storeId, Long orderId);
+
 }
