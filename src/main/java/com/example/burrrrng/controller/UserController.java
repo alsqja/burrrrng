@@ -21,6 +21,7 @@ import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/users")
@@ -68,12 +69,6 @@ public class UserController {
         return ResponseEntity.ok().body(result);
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-//        userService.deleteUser(id);
-//        return ResponseEntity.ok().body("정상적으로 삭제되었습니다.");
-//    }
-
     @PatchMapping("/{id}/password")
     public ResponseEntity<CommonResDto<UserResponseDto>> updatePassword(@PathVariable Long id,
                                                                         @Valid @RequestBody PasswordUpdateRequestDto passwordUpdateRequestDto,
@@ -100,11 +95,45 @@ public class UserController {
 
         //  session 처리 REQUEST 사용 -> 로그인 세션 로직과 동일
         HttpSession session = request.getSession();
-        session.setAttribute(Const.PASSWORD_CHECK, true);
+        session.setAttribute(Const.PASSWORD_CHECK, Boolean.TRUE);
 
         return ResponseEntity.status(HttpStatus.OK).body(new CommonNoContentResDto("비밀번호 일치 확인"));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CommonNoContentResDto> deleteUser(
+            @PathVariable Long id,
+            @SessionAttribute(name = Const.LOGIN_USER) User loginUser,
+            @SessionAttribute(name = Const.PASSWORD_CHECK, required = false) Boolean isChecked,
+            HttpServletRequest request
+    ) {
+        if (isChecked == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호를 확인해주세요.");
+        }
 
 
+
+        if (!loginUser.getId().equals(id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인만 삭제할 수 있습니다.");
+        }
+
+        userService.deleteUser(id, loginUser);
+
+        //  logout();
+        logout(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonNoContentResDto("정상적으로 삭제되었습니다."));
+    }
+
+    //  public --- logout() {}
+    @PostMapping("/logout")
+    public ResponseEntity<CommonNoContentResDto> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonNoContentResDto("로그아웃 되었습니다."));
+
+    }
 }

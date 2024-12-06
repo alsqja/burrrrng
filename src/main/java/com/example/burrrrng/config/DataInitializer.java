@@ -72,5 +72,6 @@ public class DataInitializer {
             OrderMenu orderMenu = new OrderMenu(order, menus.get(i), cartItems.get(i).getAmount());
             orderMenuRepository.save(orderMenu);
         }
+
     }
 }
