@@ -27,8 +27,7 @@ MySQL : Ver 8+
 ---
 
 ## **시연 영상**
-[시연 영상 URL]()
-업로드 후 추가 필요
+[시연 영상 URL](https://youtu.be/qUT_MZ3ncqQ)
 
 ## 팀원
 
