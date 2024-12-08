@@ -15,16 +15,21 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "store")
 @Getter
-@SQLDelete(sql = "UPDATE store SET deleted_at = ? WHERE id = ?")
+@Setter
+@SQLDelete(sql = "UPDATE store SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 public class Store extends BaseEntity {
 
     @Id
@@ -39,10 +44,10 @@ public class Store extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    private LocalDateTime openedAt;
+    private LocalTime openedAt;
 
     @Column(nullable = false)
-    private LocalDateTime closedAt;
+    private LocalTime closedAt;
 
     @Column(nullable = false)
     private int minPrice;
@@ -63,7 +68,7 @@ public class Store extends BaseEntity {
     public Store() {
     }
 
-    public Store(User user, String name, LocalDateTime openedAt, LocalDateTime closedAt, int minPrice, StoreStatus status) {
+    public Store(User user, String name, LocalTime openedAt, LocalTime closedAt, int minPrice, StoreStatus status) {
         this.user = user;
         this.name = name;
         this.openedAt = openedAt;
@@ -71,4 +76,5 @@ public class Store extends BaseEntity {
         this.minPrice = minPrice;
         this.status = status;
     }
+
 }

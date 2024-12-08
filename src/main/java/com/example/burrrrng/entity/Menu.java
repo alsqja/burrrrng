@@ -14,8 +14,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +27,8 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "menu")
-@SQLDelete(sql = "UPDATE menu SET deleted_at = ? WHERE id = ?")
+@SQLDelete(sql = "UPDATE menu SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 public class Menu extends BaseEntity {
 
     @Id
@@ -36,7 +40,7 @@ public class Menu extends BaseEntity {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "store_id", referencedColumnName = "id")
     private Store store;
 
     @Column(nullable = false)
@@ -55,9 +59,6 @@ public class Menu extends BaseEntity {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderMenu> orderMenus = new ArrayList<>();
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<CartMenu> cartMenus = new ArrayList<>();
-
     public Menu() {
     }
 
@@ -66,6 +67,18 @@ public class Menu extends BaseEntity {
         this.store = store;
         this.name = name;
         this.price = price;
+        this.status = status;
+    }
+
+    public void updatePrice(@NotNull(message = "가격은 필수입니다.") @Min(value = 500, message = "가격은 최소 500원 이상이어야 합니다.") int price) {
+        this.price = price;
+    }
+
+    public void updateName(@NotNull(message = "이름은 필수입니다.") String name) {
+        this.name = name;
+    }
+
+    public void updateStatus(MenuStatus status) {
         this.status = status;
     }
 }

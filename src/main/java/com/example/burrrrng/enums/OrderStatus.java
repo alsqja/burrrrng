@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 public enum OrderStatus {
+    
     UNCHECKED("unchecked"),
     CHECKED("checked"),
     COOKING("cooking"),

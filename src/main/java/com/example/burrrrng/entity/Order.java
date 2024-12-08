@@ -21,7 +21,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table(name = "order")
+@Table(name = "`order`")
 public class Order extends BaseEntity {
 
     @Id
@@ -52,6 +52,10 @@ public class Order extends BaseEntity {
     public Order(User user, Store store, OrderStatus status) {
         this.user = user;
         this.store = store;
+        this.status = status;
+    }
+
+    public void updateStatus(OrderStatus status) {
         this.status = status;
     }
 }
