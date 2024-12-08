@@ -129,9 +129,9 @@ MySQL : Ver 8+
 - Owner 는 들어온 주문의 status 를 변경할 수 있습니다.
 
 ## Trouble Shooting
-- [김민범 Trouble Shooting : ]()
-- [손민석 Trouble Shooting : ]()
-- [장은영 Trouble Shooting : ]()
+- [김민범 Trouble Shooting : 쿠키를 이용한 장바구니](https://velog.io/@alsqja2626/Trouble-Shooting-%EC%BF%A0%ED%82%A4%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%9E%A5%EB%B0%94%EA%B5%AC%EB%8B%88)
+- [손민석 Trouble Shooting : 데이터 정렬](https://usejava.tistory.com/32)
+- [장은영 Trouble Shooting : 쿠키와 세션을 이용한 비밀번호 확인](https://write7551.tistory.com/36)
 
 ## 마치며
 ### 완성 소감
